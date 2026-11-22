@@ -1,37 +1,35 @@
 # -*- coding: utf-8 -*-
-"""统计 data/quests.json 里每个区域的任务是怎么归过来的：
-	名字里带地名（高置信） / 伴星任务（高置信） / 按版本批次推（低置信）。
-	输出一份给用户看的报告底稿到 %TEMP%\\report.txt。"""
+"""统计 data/quests.json 里每条的「在哪儿」是怎么来的：
+	任务名里带地名（看得出来） / 名字里没地名（靠版本猜或根本没有）。
+	输出一份给用户看的报告底稿到 %TEMP%\\report.txt。
+
+0.7.0 起分组是版本（1.0 … 3.8），地图降级成 subArea，
+所以这里统计的不再是「哪个地区的任务」，而是「哪条任务能看出在地图上哪儿」。"""
 import json, io, os, sys
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__))))
-import parse_bili as P  # noqa: E402
+import import_bili as B  # noqa: E402
 
 path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'data', 'quests.json')
 d = json.load(io.open(path, encoding='utf-8'))
 
-SUB_NAMES = [kw for kw, _ in P.NAME_REGION]
 lines = []
 tot = 0
-low = 0
+known = 0
 for r in d['regions']:
-    high = []
-    lowc = []
-    for q in r['quests']:
-        n = q['name']
-        if any(s in n for s in SUB_NAMES):
-            high.append(q)
-        elif q['type'] == 'comp':
-            high.append(q)
-        else:
-            lowc.append(q)
-        tot += 1
-    low += len(lowc)
-    lines.append('## %s（%d 条，其中按版本推测 %d 条）' % (r['name'], len(r['quests']), len(lowc)))
-    lines.append('   高置信 %d：%s' % (len(high), '、'.join(x['name'] for x in high) or '（无）'))
-    if lowc:
-        lines.append('   推测 %d：%s' % (len(lowc), '、'.join(x['name'] for x in lowc)))
+    k = [q for q in r['quests'] if q.get('subArea')]
+    u = [q for q in r['quests'] if not q.get('subArea')]
+    tot += len(r['quests'])
+    known += len(k)
+    lines.append('## %s（%d 条，其中 %d 条能看出地图）' % (r['name'], len(r['quests']), len(k)))
+    if k:
+        lines.append('   地名：%s' % '、'.join('%s（%s）' % (x['name'], x['subArea']) for x in k))
+    if u:
+        lines.append('   没地名 %d：%s' % (len(u), '、'.join(x['name'] for x in u)))
     lines.append('')
 
-lines.append('合计 %d 条，其中 %d 条只按「版本批次」推的（低置信）。' % (tot, low))
+lines.insert(0, '数据源：B 站 UP「叫我棉被」《鸣潮开服以来全任务攻略合集》')
+lines.insert(1, '类型照抄 UP 视频标题里的【】标记；地图只从任务名里的地名取，取不到就留空。')
+lines.insert(2, '')
+lines.append('合计 %d 条，其中 %d 条名字里带地名，%d 条看不出在哪张图。' % (tot, known, tot - known))
 io.open(os.path.join(os.environ['TEMP'], 'report.txt'), 'w', encoding='utf-8').write('\n'.join(lines))
-print('ok', tot, low)
+print('ok', tot, known, tot - known)

@@ -150,7 +150,10 @@ namespace WuwaChecklist
             dc.DrawLine(new Pen(Theme.Scaled(Theme.Line, op), 1),
                 new Point(w + 0.5, Theme.HeaderH), new Point(w + 0.5, bottom));
 
-            var label = Text("区域", 10, Theme.BrSub);
+            // 按版本分的时候这一列就是版本号，标题跟着换，不然写着「区域」列着「2.4」很怪
+            bool byVersion = _host.Db.Regions.Count > 0
+                && string.IsNullOrEmpty(_host.Db.Regions[0].Chapter);
+            var label = Text(byVersion ? "版本" : "区域", 10, Theme.BrSub);
             dc.DrawText(label, new Point(16, Theme.HeaderH + 6));
 
             double rowsTop = Theme.HeaderH + 22;
@@ -219,17 +222,31 @@ namespace WuwaChecklist
         /// <summary>
         /// 左列的行：章节头 + 该章节的地区。展开的那一章才列地区，其余只留一行标题。
         /// 一次只开一章——这是他自己选的「按版本折叠，只展开当前章节」。
+        ///
+        /// 0.7.0 起任务库改成按版本分组（1.0 / 1.1 / … / 3.8），数据里不再有 chapter，
+        /// 这时整列就是一排版本平铺，滚着看，不折了——23 个版本折成 3 组反而多按一下。
         /// </summary>
         private List<LeftRow> BuildLeftRows()
         {
             var rows = new List<LeftRow>();
             string open = _host.OpenChapter;
+            bool hideDone = _host.Store.Settings.HideDoneRegions;
+            var cur0 = _host.CurrentRegion;
 
             // 按章节首次出现的顺序分组（Regions 已经按 order 排过）
             var order = new List<string>();
             var map = new Dictionary<string, List<Region>>(StringComparer.Ordinal);
             foreach (var r in _host.Db.Regions)
             {
+                // 做完的藏起来，但当前正选着的那条永远留着——不然右列写着「2.0」，
+                // 左列找不到它在哪儿，看着像程序坏了
+                if (hideDone && (cur0 == null || r.Id != cur0.Id))
+                {
+                    int dd, tt;
+                    _host.CountRegion(r, out dd, out tt);
+                    if (tt > 0 && dd >= tt) continue;
+                }
+
                 string ch = string.IsNullOrEmpty(r.Chapter) ? "其他" : r.Chapter;
                 if (!map.ContainsKey(ch))
                 {
@@ -241,6 +258,15 @@ namespace WuwaChecklist
 
             foreach (var ch in order)
             {
+                // 整份库都没有章节（按版本分的那种），平铺
+                bool noChapters = string.IsNullOrEmpty(_host.Db.Regions[0].Chapter);
+                if (noChapters)
+                {
+                    foreach (var r in map[ch])
+                        rows.Add(new LeftRow { Kind = "region", Chapter = null, Region = r, H = Theme.RegionRowH });
+                    continue;
+                }
+
                 // 这一章只有一张地图的时候，标题和地图名会重成「黑海岸 / 黑海岸」，
                 // 折一层也是白折，直接把地图摊到顶层。
                 if (map[ch].Count == 1)

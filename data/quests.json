@@ -1,13 +1,13 @@
 {
- "schemaVersion": 2,
+ "schemaVersion": 3,
  "gameVersion": "3.8",
- "updatedAt": "2026-11-22T18:16:35",
- "note": "任务数据来自 B 站 UP「叫我棉被」的《鸣潮开服以来全任务攻略合集》（space.bilibili.com/570235512/lists/6498351），合集里 24 个视频按版本分，每个视频的分 P 就是一条条任务；类型用 UP 在标题里标的【潮汐/伴星/道引/纪闻/危行/隐藏/活动】。区域按版本归属，名字里带地名的细化到子图。",
+ "updatedAt": "2026-11-22T20:11:50",
+ "note": "任务数据来自 B 站 UP「叫我棉被」的《鸣潮开服以来全任务攻略合集》（space.bilibili.com/570235512/lists/6498351），合集里 24 个视频按版本分，每个视频的分 P 就是一条条任务。类型用 UP 在标题里标的【潮汐/伴星/道引/纪闻/危行/隐藏/活动】。分组按版本（1.0 … 3.8），地图降级成 subArea。",
  "regions": [
   {
-   "id": "jz",
-   "name": "今州",
-   "chapter": "瑝珑",
+   "id": "v10",
+   "name": "1.0",
+   "chapter": "",
    "order": 10,
    "quests": [
     {
@@ -17,37 +17,37 @@
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=2"
     },
     {
-     "id": "jz-12070",
+     "id": "v10-002",
      "name": "嘤鸣初相召",
      "type": "main",
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=3"
     },
     {
-     "id": "jz-12069",
+     "id": "v10-003",
      "name": "撞金止行阵",
      "type": "main",
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=4"
     },
     {
-     "id": "jz-12068",
+     "id": "v10-004",
      "name": "奔策候残星",
      "type": "main",
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=5"
     },
     {
-     "id": "jz-12067",
+     "id": "v10-005",
      "name": "庭际刀刃鸣",
      "type": "main",
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=6"
     },
     {
-     "id": "jz-14395",
+     "id": "v10-006",
      "name": "欲知天将雨",
      "type": "main",
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=7"
     },
     {
-     "id": "jz-14804",
+     "id": "v10-007",
      "name": "千里卷戎旌",
      "type": "main",
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=8"
@@ -71,7 +71,7 @@
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=11"
     },
     {
-     "id": "jz-14390",
+     "id": "v10-011",
      "name": "独行深渊",
      "type": "tale",
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=12"
@@ -83,44 +83,44 @@
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=13"
     },
     {
-     "id": "jz-12053",
+     "id": "v10-013",
      "name": "初试先行者",
      "type": "tale",
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=14"
     },
     {
-     "id": "jz-12055",
+     "id": "v10-014",
      "name": "旧日的余音",
      "type": "tale",
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=15"
     },
     {
-     "id": "jz-14284",
+     "id": "v10-015",
      "name": "营地突袭",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=16"
     },
     {
-     "id": "jz-14292",
+     "id": "v10-016",
      "name": "出工日的厄运",
      "type": "hidden",
      "hidden": true,
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=17"
     },
     {
-     "id": "jz-12110",
+     "id": "v10-017",
      "name": "暗探潜踪",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=18"
     },
     {
-     "id": "jz-12076",
+     "id": "v10-018",
      "name": "等待戈铎",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=19"
     },
     {
-     "id": "jz-12083",
+     "id": "v10-019",
      "name": "调查营地配给失窃一事",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=20"
@@ -138,7 +138,7 @@
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=22"
     },
     {
-     "id": "jz-14285",
+     "id": "v10-022",
      "name": "沉没的历史",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=23"
@@ -150,7 +150,7 @@
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=24"
     },
     {
-     "id": "jz-14294",
+     "id": "v10-024",
      "name": "清刃奇侠",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=25"
@@ -162,7 +162,7 @@
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=26"
     },
     {
-     "id": "jz-14296",
+     "id": "v10-026",
      "name": "过去即是明天·后日谈",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=27"
@@ -181,50 +181,54 @@
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=29"
     },
     {
-     "id": "jz-14295",
+     "id": "v10-029",
      "name": "今州游学·咕咕河豚",
      "type": "hidden",
      "hidden": true,
+     "subArea": "今州",
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=30"
     },
     {
-     "id": "jz-14279",
+     "id": "v10-030",
      "name": "少年尚知读书时",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=31"
     },
     {
-     "id": "jz-12094",
+     "id": "v10-031",
      "name": "今州刊物·创刊号",
      "type": "side",
+     "subArea": "今州",
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=32"
     },
     {
-     "id": "jz-12093",
+     "id": "v10-032",
      "name": "今州刊物·第二期",
      "type": "side",
+     "subArea": "今州",
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=33"
     },
     {
-     "id": "jz-12056",
+     "id": "v10-033",
      "name": "拍忆今州",
      "type": "side",
+     "subArea": "今州",
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=34"
     },
     {
-     "id": "jz-12097",
+     "id": "v10-034",
      "name": "银发声骸训练师·一",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=35"
     },
     {
-     "id": "jz-12096",
+     "id": "v10-035",
      "name": "银发声骸训练师·二",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=36"
     },
     {
-     "id": "jz-12095",
+     "id": "v10-036",
      "name": "银发声骸训练师·三",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=37"
@@ -294,19 +298,19 @@
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=45"
     },
     {
-     "id": "jz-12063",
+     "id": "v10-045",
      "name": "使命必达",
      "type": "expl",
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=46"
     },
     {
-     "id": "jz-12079",
+     "id": "v10-046",
      "name": "枪头测试进阶挑战",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=47"
     },
     {
-     "id": "jz-12090",
+     "id": "v10-047",
      "name": "永不消逝的琴声",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=48"
@@ -330,37 +334,37 @@
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=51"
     },
     {
-     "id": "jz-12061",
+     "id": "v10-051",
      "name": "当森林不再阴霾",
      "type": "expl",
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=52"
     },
     {
-     "id": "jz-14393",
+     "id": "v10-052",
      "name": "射击派对",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=53"
     },
     {
-     "id": "jz-12075",
+     "id": "v10-053",
      "name": "今夜无人应答",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=54"
     },
     {
-     "id": "jz-14277",
+     "id": "v10-054",
      "name": "当月光照进森林",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=55"
     },
     {
-     "id": "jz-14293",
+     "id": "v10-055",
      "name": "于古榕的月光下",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=56"
     },
     {
-     "id": "jz-14283",
+     "id": "v10-056",
      "name": "一触即炸",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=58"
@@ -372,53 +376,47 @@
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=59"
     },
     {
-     "id": "jz-14291",
+     "id": "v10-058",
      "name": "曲问趣答·二",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=60"
     },
     {
-     "id": "jz-14290",
+     "id": "v10-059",
      "name": "曲问趣答·三",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=61"
     },
     {
-     "id": "jz-14287",
+     "id": "v10-060",
      "name": "角斗本色",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=62"
     },
     {
-     "id": "jz-12062",
+     "id": "v10-061",
      "name": "彼岸的哀歌",
      "type": "expl",
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=63"
     },
     {
-     "id": "jz-12052",
+     "id": "v10-062",
      "name": "圆台命题",
      "type": "tale",
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=64"
     },
     {
-     "id": "jz-14805",
+     "id": "v10-063",
      "name": "失踪的孤鸿",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1fK4Ve8ErM?p=65"
-    },
-    {
-     "id": "jz-35-056",
-     "name": "失踪事件：今州来客",
-     "type": "side",
-     "url": "https://www.bilibili.com/video/BV18wNj6yErP?p=17"
     }
    ]
   },
   {
-   "id": "csx",
-   "name": "乘霄山",
-   "chapter": "瑝珑",
+   "id": "v11",
+   "name": "1.1",
+   "chapter": "",
    "order": 20,
    "quests": [
     {
@@ -481,7 +479,15 @@
      "name": "长路鳞迹",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1oHCmYLEvn?p=10"
-    },
+    }
+   ]
+  },
+  {
+   "id": "v12",
+   "name": "1.2",
+   "chapter": "",
+   "order": 30,
+   "quests": [
     {
      "id": "csx-12-011",
      "name": "守望永恒",
@@ -497,19 +503,19 @@
    ]
   },
   {
-   "id": "hha",
-   "name": "黑海岸",
-   "chapter": "黑海岸",
-   "order": 30,
+   "id": "v13",
+   "name": "1.3",
+   "chapter": "",
+   "order": 40,
    "quests": [
     {
-     "id": "hha-16900",
+     "id": "v13-001",
      "name": "行至海岸尽头",
      "type": "main",
      "url": "https://www.bilibili.com/video/BV1tFCfYcEfg?p=1"
     },
     {
-     "id": "hha-15313",
+     "id": "v13-002",
      "name": "推演的边界",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1tFCfYcEfg?p=2"
@@ -531,6 +537,7 @@
      "name": "黑海岸的秘密宝物",
      "type": "hidden",
      "hidden": true,
+     "subArea": "黑海岸",
      "url": "https://www.bilibili.com/video/BV1tFCfYcEfg?p=5"
     },
     {
@@ -556,7 +563,15 @@
      "name": "小小羊咩大冒险",
      "type": "comp",
      "url": "https://www.bilibili.com/video/BV1tFCfYcEfg?p=9"
-    },
+    }
+   ]
+  },
+  {
+   "id": "v14",
+   "name": "1.4",
+   "chapter": "",
+   "order": 50,
+   "quests": [
     {
      "id": "hha-14-010",
      "name": "暗夜叩响白昼之门·上",
@@ -574,114 +589,89 @@
      "name": "小径分岔的星海",
      "type": "comp",
      "url": "https://www.bilibili.com/video/BV1TMzwY9Ecq?p=3"
-    },
-    {
-     "id": "hha-28-013",
-     "name": "曙光停摆与荒地之上",
-     "type": "main",
-     "url": "https://www.bilibili.com/video/BV1CRyFBDEmx?p=1"
-    },
-    {
-     "id": "hha-28-014",
-     "name": "2-幕间 星光流转于眼眸之间",
-     "type": "main",
-     "url": "https://www.bilibili.com/video/BV1CRyFBDEmx?p=2"
-    },
-    {
-     "id": "hha-28-015",
-     "name": "浪沫余音",
-     "type": "side",
-     "url": "https://www.bilibili.com/video/BV1CRyFBDEmx?p=3"
-    },
-    {
-     "id": "hha-28-016",
-     "name": "扭蛋机隐藏星声",
-     "type": "hidden",
-     "hidden": true,
-     "url": "https://www.bilibili.com/video/BV1CRyFBDEmx?p=4"
     }
    ]
   },
   {
-   "id": "lnxt",
-   "name": "黎那汐塔",
-   "chapter": "黎那汐塔",
-   "order": 40,
+   "id": "v20",
+   "name": "2.0",
+   "chapter": "",
+   "order": 60,
    "quests": [
     {
-     "id": "lnxt-16899",
+     "id": "v20-001",
      "name": "如一叶小舟穿行于茫茫海洋",
      "type": "main",
      "url": "https://www.bilibili.com/video/BV1ER6iYVEJP?p=1"
     },
     {
-     "id": "lnxt-16898",
+     "id": "v20-002",
      "name": "那神圣微风时常吹入",
      "type": "main",
      "url": "https://www.bilibili.com/video/BV1ER6iYVEJP?p=2"
     },
     {
-     "id": "lnxt-16896",
+     "id": "v20-003",
      "name": "夜与昼，均请摘下面纱",
      "type": "main",
      "url": "https://www.bilibili.com/video/BV1ER6iYVEJP?p=3"
     },
     {
-     "id": "lnxt-16897",
+     "id": "v20-004",
      "name": "昔我悲伤，今却歌唱",
      "type": "main",
      "url": "https://www.bilibili.com/video/BV1ER6iYVEJP?p=4"
     },
     {
-     "id": "lnxt-16921",
+     "id": "v20-005",
      "name": "爱乐之骸",
      "type": "tale",
      "url": "https://www.bilibili.com/video/BV1ER6iYVEJP?p=5"
     },
     {
-     "id": "lnxt-16922",
+     "id": "v20-006",
      "name": "邂逅布偶村",
      "type": "tale",
      "url": "https://www.bilibili.com/video/BV1ER6iYVEJP?p=6"
     },
     {
-     "id": "lnxt-16924",
+     "id": "v20-007",
      "name": "巡礼之梦·其一",
      "type": "tale",
      "url": "https://www.bilibili.com/video/BV1ER6iYVEJP?p=7"
     },
     {
-     "id": "lnxt-16923",
+     "id": "v20-008",
      "name": "巡礼之梦·其二",
      "type": "tale",
      "url": "https://www.bilibili.com/video/BV1ER6iYVEJP?p=8"
     },
     {
-     "id": "lnxt-16920",
+     "id": "v20-009",
      "name": "当色彩消逝",
      "type": "tale",
      "url": "https://www.bilibili.com/video/BV1ER6iYVEJP?p=9"
     },
     {
-     "id": "lnxt-16908",
+     "id": "v20-010",
      "name": "拉古那假日",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1ER6iYVEJP?p=10"
     },
     {
-     "id": "lnxt-16909",
+     "id": "v20-011",
      "name": "往日幻影",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1ER6iYVEJP?p=11"
     },
     {
-     "id": "lnxt-16910",
+     "id": "v20-012",
      "name": "旧日的试炼",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1ER6iYVEJP?p=12"
     },
     {
-     "id": "lnxt-16907",
+     "id": "v20-013",
      "name": "潮心循迹",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1ER6iYVEJP?p=13"
@@ -693,19 +683,19 @@
      "url": "https://www.bilibili.com/video/BV1ER6iYVEJP?p=14"
     },
     {
-     "id": "lnxt-16914",
+     "id": "v20-015",
      "name": "高塔的幽影·回声冠塔",
      "type": "expl",
      "url": "https://www.bilibili.com/video/BV1ER6iYVEJP?p=15"
     },
     {
-     "id": "lnxt-16915",
+     "id": "v20-016",
      "name": "高塔的幽影·暮光冠塔",
      "type": "expl",
      "url": "https://www.bilibili.com/video/BV1ER6iYVEJP?p=16"
     },
     {
-     "id": "lnxt-16913",
+     "id": "v20-017",
      "name": "高塔的幽影·统驭冠塔",
      "type": "expl",
      "url": "https://www.bilibili.com/video/BV1ER6iYVEJP?p=17"
@@ -723,7 +713,7 @@
      "url": "https://www.bilibili.com/video/BV1ER6iYVEJP?p=19"
     },
     {
-     "id": "lnxt-16925",
+     "id": "v20-020",
      "name": "失落之影",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1ER6iYVEJP?p=20"
@@ -741,7 +731,7 @@
      "url": "https://www.bilibili.com/video/BV1ER6iYVEJP?p=22"
     },
     {
-     "id": "lnxt-16918",
+     "id": "v20-023",
      "name": "最佳观众",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1ER6iYVEJP?p=23"
@@ -754,91 +744,91 @@
      "url": "https://www.bilibili.com/video/BV1ER6iYVEJP?p=25"
     },
     {
-     "id": "lnxt-18380",
+     "id": "v20-025",
      "name": "古今多少故事·拂风水畔",
      "type": "hidden",
      "hidden": true,
      "url": "https://www.bilibili.com/video/BV1ER6iYVEJP?p=26"
     },
     {
-     "id": "lnxt-18381",
+     "id": "v20-026",
      "name": "古今多少故事·埃弗拉德金库",
      "type": "hidden",
      "hidden": true,
      "url": "https://www.bilibili.com/video/BV1ER6iYVEJP?p=27"
     },
     {
-     "id": "lnxt-18382",
+     "id": "v20-027",
      "name": "古今多少故事·赞悼圣迹",
      "type": "hidden",
      "hidden": true,
      "url": "https://www.bilibili.com/video/BV1ER6iYVEJP?p=28"
     },
     {
-     "id": "lnxt-18378",
+     "id": "v20-028",
      "name": "白月？绯月？",
      "type": "hidden",
      "hidden": true,
      "url": "https://www.bilibili.com/video/BV1ER6iYVEJP?p=29"
     },
     {
-     "id": "lnxt-18377",
+     "id": "v20-029",
      "name": "画中奇藏",
      "type": "hidden",
      "hidden": true,
      "url": "https://www.bilibili.com/video/BV1ER6iYVEJP?p=30"
     },
     {
-     "id": "lnxt-18385",
+     "id": "v20-030",
      "name": "古今多少故事·氤柔水境",
      "type": "hidden",
      "hidden": true,
      "url": "https://www.bilibili.com/video/BV1ER6iYVEJP?p=31"
     },
     {
-     "id": "lnxt-18384",
+     "id": "v20-031",
      "name": "古今多少故事·狄萨莱海脊",
      "type": "hidden",
      "hidden": true,
      "url": "https://www.bilibili.com/video/BV1ER6iYVEJP?p=32"
     },
     {
-     "id": "lnxt-18379",
+     "id": "v20-032",
      "name": "古今多少故事·槲生半岛",
      "type": "hidden",
      "hidden": true,
      "url": "https://www.bilibili.com/video/BV1ER6iYVEJP?p=33"
     },
     {
-     "id": "lnxt-18383",
+     "id": "v20-033",
      "name": "古今多少故事·悲叹墓岛",
      "type": "hidden",
      "hidden": true,
      "url": "https://www.bilibili.com/video/BV1ER6iYVEJP?p=34"
     },
     {
-     "id": "lnxt-16937",
+     "id": "v20-034",
      "name": "重建布偶村·一期",
      "type": "hidden",
      "hidden": true,
      "url": "https://www.bilibili.com/video/BV1ER6iYVEJP?p=35"
     },
     {
-     "id": "lnxt-16936",
+     "id": "v20-035",
      "name": "重建布偶村·二期",
      "type": "hidden",
      "hidden": true,
      "url": "https://www.bilibili.com/video/BV1ER6iYVEJP?p=36"
     },
     {
-     "id": "lnxt-16935",
+     "id": "v20-036",
      "name": "重建布偶村·三期",
      "type": "hidden",
      "hidden": true,
      "url": "https://www.bilibili.com/video/BV1ER6iYVEJP?p=37"
     },
     {
-     "id": "lnxt-16934",
+     "id": "v20-037",
      "name": "重建布偶村·四期",
      "type": "hidden",
      "hidden": true,
@@ -861,7 +851,15 @@
      "name": "洛可可：今夜星光灿烂",
      "type": "comp",
      "url": "https://www.bilibili.com/video/BV1ER6iYVEJP?p=41"
-    },
+    }
+   ]
+  },
+  {
+   "id": "v21",
+   "name": "2.1",
+   "chapter": "",
+   "order": 70,
+   "quests": [
     {
      "id": "lnxt-21-041",
      "name": "叶落无声",
@@ -869,7 +867,7 @@
      "url": "https://www.bilibili.com/video/BV1DgKneEE6E?p=1"
     },
     {
-     "id": "lnxt-17480",
+     "id": "v21-002",
      "name": "灵魂归还汪洋",
      "type": "tale",
      "url": "https://www.bilibili.com/video/BV1DgKneEE6E?p=2"
@@ -893,7 +891,7 @@
      "url": "https://www.bilibili.com/video/BV1DgKneEE6E?p=5"
     },
     {
-     "id": "lnxt-16895",
+     "id": "v21-006",
      "name": "老人鱼海",
      "type": "event",
      "url": "https://www.bilibili.com/video/BV1DgKneEE6E?p=6"
@@ -935,7 +933,7 @@
      "url": "https://www.bilibili.com/video/BV1DgKneEE6E?p=12"
     },
     {
-     "id": "lnxt-17554",
+     "id": "v21-013",
      "name": "千道门扉的异想",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1DgKneEE6E?p=13"
@@ -945,99 +943,14 @@
      "name": "布兰特：启航日，船长",
      "type": "comp",
      "url": "https://www.bilibili.com/video/BV1DgKneEE6E?p=14"
-    },
-    {
-     "id": "lnxt-23-055",
-     "name": "夜行的焰光",
-     "type": "comp",
-     "url": "https://www.bilibili.com/video/BV1kYVGzxEun?p=1"
-    },
-    {
-     "id": "lnxt-23-056",
-     "name": "同行忆旅",
-     "type": "side",
-     "url": "https://www.bilibili.com/video/BV1kYVGzxEun?p=2"
-    },
-    {
-     "id": "lnxt-17479",
-     "name": "捕梦于神秘园中",
-     "type": "main",
-     "url": "https://www.bilibili.com/video/BV1ad8KzPEvE?p=1"
-    },
-    {
-     "id": "lnxt-25-058",
-     "name": "暗影勘察",
-     "type": "side",
-     "url": "https://www.bilibili.com/video/BV1ad8KzPEvE?p=2"
-    },
-    {
-     "id": "lnxt-25-059",
-     "name": "面包与圣事",
-     "type": "side",
-     "url": "https://www.bilibili.com/video/BV1ad8KzPEvE?p=3"
-    },
-    {
-     "id": "lnxt-25-060",
-     "name": "现状与未来",
-     "type": "side",
-     "url": "https://www.bilibili.com/video/BV1ad8KzPEvE?p=4"
-    },
-    {
-     "id": "lnxt-17804",
-     "name": "铁锈，剑与烈阳",
-     "type": "main",
-     "url": "https://www.bilibili.com/video/BV1ad8KzPEvE?p=5"
-    },
-    {
-     "id": "lnxt-18848",
-     "name": "已逝的必将归来",
-     "type": "main",
-     "url": "https://www.bilibili.com/video/BV1f9xkziEyq?p=1"
-    },
-    {
-     "id": "lnxt-18847",
-     "name": "暗潮将映的黎明",
-     "type": "main",
-     "url": "https://www.bilibili.com/video/BV1f9xkziEyq?p=2"
-    },
-    {
-     "id": "lnxt-27-064",
-     "name": "奏者的愿望",
-     "type": "side",
-     "url": "https://www.bilibili.com/video/BV1f9xkziEyq?p=3"
-    },
-    {
-     "id": "lnxt-18846",
-     "name": "独在异乡为异客",
-     "type": "main",
-     "url": "https://www.bilibili.com/video/BV1f9xkziEyq?p=4"
-    },
-    {
-     "id": "lnxt-27-066",
-     "name": "黎明之星系列任务",
-     "type": "side",
-     "url": "https://www.bilibili.com/video/BV1f9xkziEyq?p=5"
-    },
-    {
-     "id": "lnxt-27-067",
-     "name": "帮切里送药",
-     "type": "hidden",
-     "hidden": true,
-     "url": "https://www.bilibili.com/video/BV1f9xkziEyq?p=6"
-    },
-    {
-     "id": "lnxt-27-068",
-     "name": "黎明之星",
-     "type": "side",
-     "url": "https://www.bilibili.com/video/BV1f9xkziEyq?p=7"
     }
    ]
   },
   {
-   "id": "avnl",
-   "name": "阿维纽林",
-   "chapter": "黎那汐塔",
-   "order": 45,
+   "id": "v22",
+   "name": "2.2",
+   "chapter": "",
+   "order": 80,
    "quests": [
     {
      "id": "avnl-22-001",
@@ -1061,6 +974,7 @@
      "id": "avnl-22-004",
      "name": "追迹阿维纽林",
      "type": "side",
+     "subArea": "阿维纽林",
      "url": "https://www.bilibili.com/video/BV1JoZLYAEkH?p=4"
     },
     {
@@ -1074,21 +988,34 @@
      "name": "布偶小队历险记",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1JoZLYAEkH?p=6"
-    },
-    {
-     "id": "avnl-24-007",
-     "name": "古今多少故事·阿维纽林",
-     "type": "hidden",
-     "hidden": true,
-     "url": "https://www.bilibili.com/video/BV1wtMFzCEqt?p=13"
     }
    ]
   },
   {
-   "id": "qq",
-   "name": "七丘",
-   "chapter": "黎那汐塔",
-   "order": 50,
+   "id": "v23",
+   "name": "2.3",
+   "chapter": "",
+   "order": 90,
+   "quests": [
+    {
+     "id": "lnxt-23-055",
+     "name": "夜行的焰光",
+     "type": "comp",
+     "url": "https://www.bilibili.com/video/BV1kYVGzxEun?p=1"
+    },
+    {
+     "id": "lnxt-23-056",
+     "name": "同行忆旅",
+     "type": "side",
+     "url": "https://www.bilibili.com/video/BV1kYVGzxEun?p=2"
+    }
+   ]
+  },
+  {
+   "id": "v24",
+   "name": "2.4",
+   "chapter": "",
+   "order": 100,
    "quests": [
     {
      "id": "qq-24-001",
@@ -1165,6 +1092,14 @@
      "url": "https://www.bilibili.com/video/BV1wtMFzCEqt?p=12"
     },
     {
+     "id": "avnl-24-007",
+     "name": "古今多少故事·阿维纽林",
+     "type": "hidden",
+     "hidden": true,
+     "subArea": "阿维纽林",
+     "url": "https://www.bilibili.com/video/BV1wtMFzCEqt?p=13"
+    },
+    {
      "id": "qq-24-013",
      "name": "燃烧的心",
      "type": "main",
@@ -1203,10 +1138,48 @@
    ]
   },
   {
-   "id": "sgys",
-   "name": "桑古伊斯狩原",
-   "chapter": "黎那汐塔",
-   "order": 55,
+   "id": "v25",
+   "name": "2.5",
+   "chapter": "",
+   "order": 110,
+   "quests": [
+    {
+     "id": "v25-001",
+     "name": "捕梦于神秘园中",
+     "type": "main",
+     "url": "https://www.bilibili.com/video/BV1ad8KzPEvE?p=1"
+    },
+    {
+     "id": "lnxt-25-058",
+     "name": "暗影勘察",
+     "type": "side",
+     "url": "https://www.bilibili.com/video/BV1ad8KzPEvE?p=2"
+    },
+    {
+     "id": "lnxt-25-059",
+     "name": "面包与圣事",
+     "type": "side",
+     "url": "https://www.bilibili.com/video/BV1ad8KzPEvE?p=3"
+    },
+    {
+     "id": "lnxt-25-060",
+     "name": "现状与未来",
+     "type": "side",
+     "url": "https://www.bilibili.com/video/BV1ad8KzPEvE?p=4"
+    },
+    {
+     "id": "v25-005",
+     "name": "铁锈，剑与烈阳",
+     "type": "main",
+     "url": "https://www.bilibili.com/video/BV1ad8KzPEvE?p=5"
+    }
+   ]
+  },
+  {
+   "id": "v26",
+   "name": "2.6",
+   "chapter": "",
+   "order": 120,
    "quests": [
     {
      "id": "sgys-26-001",
@@ -1288,13 +1261,97 @@
    ]
   },
   {
-   "id": "lhl",
-   "name": "拉海洛",
-   "chapter": "拉海洛",
-   "order": 60,
+   "id": "v27",
+   "name": "2.7",
+   "chapter": "",
+   "order": 130,
    "quests": [
     {
-     "id": "lhl-19817",
+     "id": "v27-001",
+     "name": "已逝的必将归来",
+     "type": "main",
+     "url": "https://www.bilibili.com/video/BV1f9xkziEyq?p=1"
+    },
+    {
+     "id": "v27-002",
+     "name": "暗潮将映的黎明",
+     "type": "main",
+     "url": "https://www.bilibili.com/video/BV1f9xkziEyq?p=2"
+    },
+    {
+     "id": "lnxt-27-064",
+     "name": "奏者的愿望",
+     "type": "side",
+     "url": "https://www.bilibili.com/video/BV1f9xkziEyq?p=3"
+    },
+    {
+     "id": "v27-004",
+     "name": "独在异乡为异客",
+     "type": "main",
+     "url": "https://www.bilibili.com/video/BV1f9xkziEyq?p=4"
+    },
+    {
+     "id": "lnxt-27-066",
+     "name": "黎明之星系列任务",
+     "type": "side",
+     "url": "https://www.bilibili.com/video/BV1f9xkziEyq?p=5"
+    },
+    {
+     "id": "lnxt-27-067",
+     "name": "帮切里送药",
+     "type": "hidden",
+     "hidden": true,
+     "url": "https://www.bilibili.com/video/BV1f9xkziEyq?p=6"
+    },
+    {
+     "id": "lnxt-27-068",
+     "name": "黎明之星",
+     "type": "side",
+     "url": "https://www.bilibili.com/video/BV1f9xkziEyq?p=7"
+    }
+   ]
+  },
+  {
+   "id": "v28",
+   "name": "2.8",
+   "chapter": "",
+   "order": 140,
+   "quests": [
+    {
+     "id": "hha-28-013",
+     "name": "曙光停摆与荒地之上",
+     "type": "main",
+     "url": "https://www.bilibili.com/video/BV1CRyFBDEmx?p=1"
+    },
+    {
+     "id": "hha-28-014",
+     "name": "2-幕间 星光流转于眼眸之间",
+     "type": "main",
+     "url": "https://www.bilibili.com/video/BV1CRyFBDEmx?p=2"
+    },
+    {
+     "id": "hha-28-015",
+     "name": "浪沫余音",
+     "type": "side",
+     "url": "https://www.bilibili.com/video/BV1CRyFBDEmx?p=3"
+    },
+    {
+     "id": "hha-28-016",
+     "name": "扭蛋机隐藏星声",
+     "type": "hidden",
+     "hidden": true,
+     "url": "https://www.bilibili.com/video/BV1CRyFBDEmx?p=4"
+    }
+   ]
+  },
+  {
+   "id": "v30",
+   "name": "3.0",
+   "chapter": "",
+   "order": 150,
+   "quests": [
+    {
+     "id": "v30-001",
      "name": "未知的既感",
      "type": "main",
      "url": "https://www.bilibili.com/video/BV1ZyBUBcER3?p=2"
@@ -1312,25 +1369,25 @@
      "url": "https://www.bilibili.com/video/BV1ZyBUBcER3?p=4"
     },
     {
-     "id": "lhl-19826",
+     "id": "v30-004",
      "name": "载具驾驶教学",
      "type": "tale",
      "url": "https://www.bilibili.com/video/BV1ZyBUBcER3?p=5"
     },
     {
-     "id": "lhl-19827",
+     "id": "v30-005",
      "name": "净化终声残卷",
      "type": "tale",
      "url": "https://www.bilibili.com/video/BV1ZyBUBcER3?p=6"
     },
     {
-     "id": "lhl-20049",
+     "id": "v30-006",
      "name": "车手一号",
      "type": "expl",
      "url": "https://www.bilibili.com/video/BV1ZyBUBcER3?p=7"
     },
     {
-     "id": "lhl-20048",
+     "id": "v30-007",
      "name": "失落的乐声",
      "type": "expl",
      "url": "https://www.bilibili.com/video/BV1ZyBUBcER3?p=8"
@@ -1342,31 +1399,31 @@
      "url": "https://www.bilibili.com/video/BV1ZyBUBcER3?p=9"
     },
     {
-     "id": "lhl-20045",
+     "id": "v30-009",
      "name": "被光影定格的瞬间",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1ZyBUBcER3?p=10"
     },
     {
-     "id": "lhl-19828",
+     "id": "v30-010",
      "name": "开辟测界之路",
      "type": "expl",
      "url": "https://www.bilibili.com/video/BV1ZyBUBcER3?p=11"
     },
     {
-     "id": "lhl-20672",
+     "id": "v30-011",
      "name": "光的来处",
      "type": "expl",
      "url": "https://www.bilibili.com/video/BV1ZyBUBcER3?p=12"
     },
     {
-     "id": "lhl-19824",
+     "id": "v30-012",
      "name": "关闭开关是打开开关",
      "type": "tale",
      "url": "https://www.bilibili.com/video/BV1ZyBUBcER3?p=13"
     },
     {
-     "id": "lhl-19825",
+     "id": "v30-013",
      "name": "青实归林",
      "type": "tale",
      "url": "https://www.bilibili.com/video/BV1ZyBUBcER3?p=14"
@@ -1378,7 +1435,7 @@
      "url": "https://www.bilibili.com/video/BV1ZyBUBcER3?p=15"
     },
     {
-     "id": "lhl-20670",
+     "id": "v30-015",
      "name": "不思议怪谈·驶向何处的列车",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1ZyBUBcER3?p=16"
@@ -1390,13 +1447,13 @@
      "url": "https://www.bilibili.com/video/BV1ZyBUBcER3?p=17"
     },
     {
-     "id": "lhl-20668",
+     "id": "v30-017",
      "name": "不思议怪谈·造路悬仪暴乱中",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1ZyBUBcER3?p=18"
     },
     {
-     "id": "lhl-20667",
+     "id": "v30-018",
      "name": "不思议怪谈·迷失在雾中隧道",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1ZyBUBcER3?p=19"
@@ -1522,7 +1579,7 @@
      "url": "https://www.bilibili.com/video/BV1ZyBUBcER3?p=40"
     },
     {
-     "id": "lhl-19815",
+     "id": "v30-039",
      "name": "致第二次日出",
      "type": "main",
      "url": "https://www.bilibili.com/video/BV1ZyBUBcER3?p=41"
@@ -1536,10 +1593,10 @@
    ]
   },
   {
-   "id": "lyby",
-   "name": "罗伊冰原",
-   "chapter": "拉海洛",
-   "order": 65,
+   "id": "v31",
+   "name": "3.1",
+   "chapter": "",
+   "order": 160,
    "quests": [
     {
      "id": "lyby-31-001",
@@ -1548,43 +1605,43 @@
      "url": "https://www.bilibili.com/video/BV1XqFhztE1C?p=1"
     },
     {
-     "id": "lyby-24521",
+     "id": "v31-002",
      "name": "冰与铁之歌",
      "type": "expl",
      "url": "https://www.bilibili.com/video/BV1XqFhztE1C?p=2"
     },
     {
-     "id": "lyby-24520",
+     "id": "v31-003",
      "name": "凛冬的希望",
      "type": "expl",
      "url": "https://www.bilibili.com/video/BV1XqFhztE1C?p=3"
     },
     {
-     "id": "lyby-24519",
+     "id": "v31-004",
      "name": "谢谢，再见，世界上的另一个我",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1XqFhztE1C?p=4"
     },
     {
-     "id": "lyby-24518",
+     "id": "v31-005",
      "name": "冰川存忆",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1XqFhztE1C?p=5"
     },
     {
-     "id": "lyby-24517",
+     "id": "v31-006",
      "name": "冲破寒冰之镜",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1XqFhztE1C?p=6"
     },
     {
-     "id": "lyby-24516",
+     "id": "v31-007",
      "name": "来自雪白深处",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1XqFhztE1C?p=7"
     },
     {
-     "id": "lyby-24515",
+     "id": "v31-008",
      "name": "冰原往事",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1XqFhztE1C?p=8"
@@ -1594,7 +1651,15 @@
      "name": "日光落处",
      "type": "main",
      "url": "https://www.bilibili.com/video/BV1XqFhztE1C?p=9"
-    },
+    }
+   ]
+  },
+  {
+   "id": "v32",
+   "name": "3.2",
+   "chapter": "",
+   "order": 170,
+   "quests": [
     {
      "id": "lyby-32-010",
      "name": "影下不落的黄金",
@@ -1602,19 +1667,19 @@
      "url": "https://www.bilibili.com/video/BV1cEwrzgEAJ?p=1"
     },
     {
-     "id": "lyby-24562",
+     "id": "v32-002",
      "name": "终焉矩阵",
      "type": "tale",
      "url": "https://www.bilibili.com/video/BV1cEwrzgEAJ?p=2"
     },
     {
-     "id": "lyby-24563",
+     "id": "v32-003",
      "name": "钴蓝雪线的订单",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1cEwrzgEAJ?p=3"
     },
     {
-     "id": "lyby-24564",
+     "id": "v32-004",
      "name": "升起的烟花，该从哪边看？",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1cEwrzgEAJ?p=4"
@@ -1632,7 +1697,7 @@
      "url": "https://www.bilibili.com/video/BV1cEwrzgEAJ?p=6"
     },
     {
-     "id": "lyby-24566",
+     "id": "v32-007",
      "name": "寻猫大师",
      "type": "hidden",
      "hidden": true,
@@ -1649,7 +1714,15 @@
      "name": "影面颠倒的兔影",
      "type": "main",
      "url": "https://www.bilibili.com/video/BV1cEwrzgEAJ?p=9"
-    },
+    }
+   ]
+  },
+  {
+   "id": "v33",
+   "name": "3.3",
+   "chapter": "",
+   "order": 180,
+   "quests": [
     {
      "id": "lyby-33-019",
      "name": "愿系铃中",
@@ -1735,13 +1808,13 @@
      "url": "https://www.bilibili.com/video/BV1Qy9tBeEer?p=14"
     },
     {
-     "id": "lyby-21890",
+     "id": "v33-015",
      "name": "最终杰作",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1Qy9tBeEer?p=15"
     },
     {
-     "id": "lyby-21879",
+     "id": "v33-016",
      "name": "拂光搁浅的旧讯·后日谈",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1Qy9tBeEer?p=16"
@@ -1798,13 +1871,13 @@
    ]
   },
   {
-   "id": "yzc",
-   "name": "夜之城",
-   "chapter": "拉海洛",
-   "order": 70,
+   "id": "v34",
+   "name": "3.4",
+   "chapter": "",
+   "order": 190,
    "quests": [
     {
-     "id": "yzc-22149",
+     "id": "v34-001",
      "name": "边缘幻梦",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1TiEK6mEou?p=1"
@@ -1824,25 +1897,25 @@
    ]
   },
   {
-   "id": "mz",
-   "name": "梦州",
-   "chapter": "梦州",
-   "order": 80,
+   "id": "v35",
+   "name": "3.5",
+   "chapter": "",
+   "order": 200,
    "quests": [
     {
-     "id": "mz-22840",
+     "id": "v35-001",
      "name": "山雨欲来风满楼",
      "type": "main",
      "url": "https://www.bilibili.com/video/BV18wNj6yErP?p=1"
     },
     {
-     "id": "mz-22839",
+     "id": "v35-002",
      "name": "玄翎振壑定澜音",
      "type": "main",
      "url": "https://www.bilibili.com/video/BV18wNj6yErP?p=2"
     },
     {
-     "id": "mz-22838",
+     "id": "v35-003",
      "name": "灵籁之契冥相因",
      "type": "main",
      "url": "https://www.bilibili.com/video/BV18wNj6yErP?p=3"
@@ -1925,6 +1998,13 @@
      "name": "潜在风险：致富好项目·一＋二",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV18wNj6yErP?p=16"
+    },
+    {
+     "id": "jz-35-056",
+     "name": "失踪事件：今州来客",
+     "type": "side",
+     "subArea": "今州",
+     "url": "https://www.bilibili.com/video/BV18wNj6yErP?p=17"
     },
     {
      "id": "mz-35-017",
@@ -2033,15 +2113,23 @@
      "name": "最后的方庭演武",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV18wNj6yErP?p=35"
-    },
+    }
+   ]
+  },
+  {
+   "id": "v36",
+   "name": "3.6",
+   "chapter": "",
+   "order": 210,
+   "quests": [
     {
-     "id": "mz-23540",
+     "id": "v36-001",
      "name": "烟云幽远心剑鸣",
      "type": "main",
      "url": "https://www.bilibili.com/video/BV1dk8F6BEgt?p=1"
     },
     {
-     "id": "mz-23539",
+     "id": "v36-002",
      "name": "幽客销残声",
      "type": "main",
      "url": "https://www.bilibili.com/video/BV1dk8F6BEgt?p=2"
@@ -2069,9 +2157,17 @@
      "name": "隐藏数据·其二",
      "type": "side",
      "url": "https://www.bilibili.com/video/BV1dk8F6BEgt?p=6"
-    },
+    }
+   ]
+  },
+  {
+   "id": "v37",
+   "name": "3.7",
+   "chapter": "",
+   "order": 220,
+   "quests": [
     {
-     "id": "mz-24197",
+     "id": "v37-001",
      "name": "梦枢心相由心生",
      "type": "main",
      "url": "https://www.bilibili.com/video/BV17vad6zEUM?p=1"
@@ -2135,9 +2231,17 @@
      "name": "心的庭院",
      "type": "main",
      "url": "https://www.bilibili.com/video/BV17vad6zEUM?p=11"
-    },
+    }
+   ]
+  },
+  {
+   "id": "v38",
+   "name": "3.8",
+   "chapter": "",
+   "order": 230,
+   "quests": [
     {
-     "id": "mz-24601",
+     "id": "v38-001",
      "name": "予以明日的花束",
      "type": "main",
      "url": "https://www.bilibili.com/video/BV1qFWQ6qEmE?p=1"

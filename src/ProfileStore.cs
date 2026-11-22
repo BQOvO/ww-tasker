@@ -160,6 +160,8 @@ namespace WuwaChecklist
         public double Opacity = 0.75;
         public bool Folded = false;
         public bool FilterIncomplete = false;
+        /// <summary>左列把做完的版本/区域藏起来。</summary>
+        public bool HideDoneRegions = false;
         public string LastRegion = "";
 
         /// <summary>当前展开的章节（左列按版本折叠，一次只开一章）。</summary>
@@ -186,6 +188,7 @@ namespace WuwaChecklist
             d["opacity"] = Opacity;
             d["folded"] = Folded;
             d["filterIncomplete"] = FilterIncomplete;
+            d["hideDoneRegions"] = HideDoneRegions;
             if (!string.IsNullOrEmpty(LastRegion)) d["lastRegion"] = LastRegion;
             if (!string.IsNullOrEmpty(OpenChapter)) d["openChapter"] = OpenChapter;
             if (!string.IsNullOrEmpty(TypeFilter)) d["typeFilter"] = TypeFilter;
@@ -209,6 +212,7 @@ namespace WuwaChecklist
             if (s.Opacity < 0.2 || s.Opacity > 1.0) s.Opacity = 0.75;
             s.Folded = Json.Bool(d, "folded", false);
             s.FilterIncomplete = Json.Bool(d, "filterIncomplete", false);
+            s.HideDoneRegions = Json.Bool(d, "hideDoneRegions", false);
             s.LastRegion = Json.Str(d, "lastRegion", "");
             s.OpenChapter = Json.Str(d, "openChapter", "");
             s.TypeFilter = Json.Str(d, "typeFilter", "");

@@ -532,6 +532,15 @@ namespace WuwaChecklist
                 SaveSoon();
                 _panel.InvalidateVisual();
             });
+            m.AddCheck(Db.Regions.Count > 0 && string.IsNullOrEmpty(Db.Regions[0].Chapter)
+                    ? "隐藏做完的版本" : "隐藏做完的区域",
+                Store.Settings.HideDoneRegions, () =>
+            {
+                Store.Settings.HideDoneRegions = !Store.Settings.HideDoneRegions;
+                SaveSoon();
+                _panel.InvalidateVisual();
+                _stripe.InvalidateVisual();
+            });
             m.AddItem(Locked ? "解锁（允许点击）" : "锁定（点击穿透）", ToggleLock);
             m.AddItem(Folded ? "展开完整面板" : "折叠成细条", () => SetFolded(!Folded));
 
