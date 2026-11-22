@@ -97,10 +97,10 @@ namespace WuwaChecklist
         }
 
         /// <summary>
-        /// 检查更新：拉一次远端 JSON，成功了才落盘。
+        /// 检查更新：拉一次远端 JSON，跟当前库合并（同地区同名合成一条），成功了才落盘。
         /// 全部同步执行，调用方自己丢到线程里，别阻塞 UI。
         /// </summary>
-        public static bool TryFetchRemote(out string message, out QuestDatabase fetched)
+        public static bool TryFetchRemote(QuestDatabase current, out string message, out QuestDatabase fetched)
         {
             fetched = null;
             try
@@ -130,17 +130,29 @@ namespace WuwaChecklist
                     return false;
                 }
 
-                var db = QuestDatabase.FromJson(Json.Obj(parsed));
-                if (db.Regions.Count == 0)
+                var remote = QuestDatabase.FromJson(Json.Obj(parsed));
+                if (remote.Regions.Count == 0)
                 {
                     message = "拉取失败：远端任务库没有任何区域。";
                     return false;
                 }
 
+                // 并进当前库：同名任务合成一条，本地多出来的（手工加的）不会被冲掉
+                int merged = 0, added = 0;
+                var db = current ?? remote;
+                if (current != null)
+                {
+                    db.MergeFrom(remote, out merged, out added);
+                    if (string.IsNullOrEmpty(db.GameVersion) || string.CompareOrdinal(remote.GameVersion, db.GameVersion) > 0)
+                        db.GameVersion = remote.GameVersion;
+                    db.UpdatedAt = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
+                }
+
                 string dir = Store.DefaultDir();
                 if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+                string body = Json.Stringify(db.ToJson(), true);
                 string tmp = LocalPath + ".tmp";
-                File.WriteAllText(tmp, text, new UTF8Encoding(false));
+                File.WriteAllText(tmp, body, new UTF8Encoding(false));
                 if (File.Exists(LocalPath)) File.Copy(LocalPath, LocalPath + ".bak", true);
                 File.Copy(tmp, LocalPath, true);
                 File.Delete(tmp);
@@ -149,6 +161,8 @@ namespace WuwaChecklist
                 int n = 0;
                 foreach (var r in db.Regions) n += r.Quests.Count;
                 message = "已更新：" + db.Regions.Count + " 个区域 / " + n + " 条任务"
+                          + (current != null && (added > 0 || merged > 0)
+                              ? "（新增 " + added + " 条，同名合并 " + merged + " 条）" : "")
                           + (string.IsNullOrEmpty(db.GameVersion) ? "" : "，游戏版本 " + db.GameVersion) + "。";
                 return true;
             }

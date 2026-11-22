@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -86,6 +86,54 @@ namespace WuwaChecklist
             foreach (var kv in States) states[kv.Key] = kv.Value.ToJson();
             d["states"] = states;
             return d;
+        }
+
+        /// <summary>
+        /// 任务库做过同名合并后，把挂在旧 id 上的进度挪到合并后的 id 上。
+        /// 两边都有进度时取更靠后的状态，备注拼起来。返回挪动的条数。
+        /// </summary>
+        public int MigrateMerged(QuestDatabase db)
+        {
+            if (db == null) return 0;
+            int moved = 0;
+            foreach (var r in db.Regions)
+            {
+                foreach (var q in r.Quests)
+                {
+                    if (q.MergedIds == null || q.MergedIds.Count == 0) continue;
+                    foreach (var oldId in q.MergedIds)
+                    {
+                        if (string.IsNullOrEmpty(oldId) || oldId == q.Id) continue;
+                        QuestState old;
+                        if (!States.TryGetValue(oldId, out old)) continue;
+                        States.Remove(oldId);
+
+                        QuestState now;
+                        if (!States.TryGetValue(q.Id, out now))
+                        {
+                            States[q.Id] = old;
+                            moved++;
+                            continue;
+                        }
+                        if (old.S > now.S)
+                        {
+                            if (string.IsNullOrEmpty(now.Note) && !string.IsNullOrEmpty(old.Note)) now.Note = old.Note;
+                            now.S = old.S;
+                            if (!string.IsNullOrEmpty(old.At)) now.At = old.At;
+                        }
+                        else if (!string.IsNullOrEmpty(old.Note) && !string.IsNullOrEmpty(now.Note) && old.Note != now.Note)
+                        {
+                            now.Note = now.Note + "；" + old.Note;
+                        }
+                        else if (string.IsNullOrEmpty(now.Note) && !string.IsNullOrEmpty(old.Note))
+                        {
+                            now.Note = old.Note;
+                        }
+                        moved++;
+                    }
+                }
+            }
+            return moved;
         }
 
         public static Profile FromJson(string name, Dictionary<string, object> d)
@@ -280,6 +328,15 @@ namespace WuwaChecklist
         }
 
         // ---------- 存档管理 ----------
+
+        /// <summary>所有存档都跟着任务库的合并走一遍，挪完有变化才存盘。</summary>
+        public int MigrateAll(QuestDatabase db)
+        {
+            int n = 0;
+            foreach (var kv in Profiles) n += kv.Value.MigrateMerged(db);
+            if (n > 0) Save();
+            return n;
+        }
 
         public bool CreateProfile(string name, bool copyFromActive = false)
         {

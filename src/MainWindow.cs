@@ -49,6 +49,7 @@ namespace WuwaChecklist
             Store = WuwaChecklist.Store.Load();
             if (!string.IsNullOrEmpty(Store.LastError)) App.ReportSoft(Store.LastError);
             Db = QuestStore.Load();
+            Store.MigrateAll(Db);   // 任务库做过同名合并的，把旧 id 上的进度挪过来
 
             _panel = new PanelView(this);
             _stripe = new StripeView(this);
@@ -468,10 +469,13 @@ namespace WuwaChecklist
             m.AddItem("区域 " + Db.Regions.Count + " 个 · 任务 " + CountAllQuests() + " 条", null, true);
             m.AddItem(Db.GameVersion.Length > 0 ? "数据版本 " + Db.GameVersion : "数据版本 未知", null, true);
             m.AddItem(QuestStore.SourceNote, null, true);
+            int dup = Db.CountMerged();
+            if (dup > 0) m.AddItem("同名已合并 " + dup + " 条", null, true);
             m.AddSeparator();
             m.AddItem("重新读取本地任务库", () =>
             {
                 Db = QuestStore.Load();
+                Store.MigrateAll(Db);
                 _panel.InvalidateVisual();
                 _stripe.InvalidateVisual();
             });
@@ -598,7 +602,8 @@ namespace WuwaChecklist
             {
                 string msg;
                 QuestDatabase fetched;
-                bool ok = QuestStore.TryFetchRemote(out msg, out fetched);
+                var cur = Db;
+                bool ok = QuestStore.TryFetchRemote(cur, out msg, out fetched);
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
                     _checking = false;
@@ -608,14 +613,13 @@ namespace WuwaChecklist
                         if (manual) MessageBox.Show(this, msg, "拉取失败", MessageBoxButton.OK, MessageBoxImage.Warning);
                         return;
                     }
-                    int before = CountAllQuests();
                     Db = fetched;
-                    int after = CountAllQuests();
+                    int moved = Store.MigrateAll(Db);
                     _panel.InvalidateVisual();
                     _stripe.InvalidateVisual();
                     if (manual)
-                        MessageBox.Show(this, "任务库更新了。\n任务 " + before + " 条 → " + after + " 条。", "更新完成",
-                            MessageBoxButton.OK, MessageBoxImage.Information);
+                        MessageBox.Show(this, msg + (moved > 0 ? "\n有 " + moved + " 条旧进度跟着合并挪过来了。" : ""),
+                            "更新完成", MessageBoxButton.OK, MessageBoxImage.Information);
                 }));
             });
         }
@@ -624,10 +628,12 @@ namespace WuwaChecklist
         {
             string msg;
             QuestDatabase fetched;
-            if (!QuestStore.TryFetchRemote(out msg, out fetched)) return;
+            var cur = Db;
+            if (!QuestStore.TryFetchRemote(cur, out msg, out fetched)) return;
             Dispatcher.BeginInvoke(new Action(() =>
             {
                 Db = fetched;
+                Store.MigrateAll(Db);
                 _panel.InvalidateVisual();
                 _stripe.InvalidateVisual();
             }));

@@ -387,20 +387,27 @@ namespace WuwaChecklist
             if (HasNoteLine(q))
             {
                 double ny = top + 40;
-                if (!string.IsNullOrEmpty(q.Note))
+                double nx = tx;
+                if (q.Hidden)
                 {
-                    var nt = Text(q.Note, 10, Theme.BrNote, false, tw);
-                    dc.DrawText(nt, new Point(tx, ny));
-                }
-                else if (q.Hidden)
-                {
+                    // 隐藏任务先打个小三角，后面再跟备注（合并后两条信息都可能在）
                     var tri = new Point[3];
                     tri[0] = new Point(tx, ny + 4);
                     tri[1] = new Point(tx + 5, ny + 4);
                     tri[2] = new Point(tx + 2.5, ny + 8);
                     dc.DrawGeometry(Theme.BrHide, null, Poly(tri));
+                    nx = tx + 9;
+                }
+
+                if (!string.IsNullOrEmpty(q.Note))
+                {
+                    var nt = Text(q.Note, 10, Theme.BrNote, false, tw - (nx - tx));
+                    dc.DrawText(nt, new Point(nx, ny));
+                }
+                else if (q.Hidden)
+                {
                     var ht = Text("隐藏任务 · 无追踪", 10, Theme.BrHide, false, tw - 10);
-                    dc.DrawText(ht, new Point(tx + 9, ny));
+                    dc.DrawText(ht, new Point(nx, ny));
                 }
             }
 
