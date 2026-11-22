@@ -12,15 +12,10 @@ body = """
 {% for group, commits in commits | group_by(attribute="group") %}
 ### {{ group }}
 {% for commit in commits %}
-- {{ commit.message | split(pat="\n") | first | trim | upper_first }}\
-{% if commit.body %}\
-{% for line in commit.body | split(pat="\n") %}\
-{% if line | trim | length > 0 %}\
-  {{ line | trim }}
-{% endif %}\
-{% endfor %}\
-{% endif %}\
-{% endfor %}
+- {{ commit.message | split(pat="\n") | first | trim | upper_first }}{% if commit.body %}
+
+{% for line in commit.body | split(pat="\n") %}{% if line | trim | length > 0 %}  {{ line | trim }}
+{% endif %}{% endfor %}{% endif %}{% endfor %}
 {% endfor %}
 """
 footer = """
