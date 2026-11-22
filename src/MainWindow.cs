@@ -192,23 +192,43 @@ namespace WuwaChecklist
             if (Locked) return;
             _dragging = true;
             _dragOrigin = new Point(Left, Top);
-            var mp = PointToScreen(Mouse.GetPosition(this));
-            _dragOrigin = new Point(Left, Top);
             _dragStart = new Rect(Left, Top, Width, Height);
-            _dragAnchor = mp;
+
+            // 全程用物理像素的光标位置算位移，最后再按 DPI 缩放除回去换成 DIP。
+            // 之前用 PointToScreen 拿的是物理像素，直接加到 Left/Top（DIP）上，
+            // 150% 缩放下窗口跑得比鼠标快一半，看着就是「越拖越错位」。
+            var scale = CompositionScale();
+            Win32.POINT p;
+            Win32.GetCursorPos(out p);
+            _dragAnchor = new Point(p.X, p.Y);
+            _dragAnchorScale = scale;
+
             CaptureMouse();
             MouseMove += OnDragMove;
             MouseLeftButtonUp += OnDragEnd;
         }
 
+        /// <summary>当前窗口的物理像素 / DIP 比例（150% 缩放时是 1.5）。</summary>
+        private double CompositionScale()
+        {
+            var src = PresentationSource.FromVisual(this);
+            if (src == null || src.CompositionTarget == null) return 1.0;
+            var m = src.CompositionTarget.TransformToDevice;
+            double s = m.M11;
+            return s > 0.1 ? s : 1.0;
+        }
+
         private Point _dragAnchor;
+        private double _dragAnchorScale = 1.0;
 
         private void OnDragMove(object sender, MouseEventArgs e)
         {
             if (!_dragging) return;
-            var mp = PointToScreen(e.GetPosition(this));
-            Left = Math.Round(_dragStart.X + (mp.X - _dragAnchor.X));
-            Top = Math.Round(_dragStart.Y + (mp.Y - _dragAnchor.Y));
+            Win32.POINT p;
+            if (!Win32.GetCursorPos(out p)) return;
+            double s = _dragAnchorScale > 0.1 ? _dragAnchorScale : 1.0;
+            Left = Math.Round(_dragStart.X + (p.X - _dragAnchor.X) / s);
+            Top = Math.Round(_dragStart.Y + (p.Y - _dragAnchor.Y) / s);
         }
 
         private void OnDragEnd(object sender, MouseButtonEventArgs e)

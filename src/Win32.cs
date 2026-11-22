@@ -55,6 +55,13 @@ namespace WuwaChecklist
         public struct RECT { public int Left, Top, Right, Bottom; }
 
         [StructLayout(LayoutKind.Sequential)]
+        public struct POINT { public int X, Y; }
+
+        /// <summary>光标位置，物理像素。拖窗用它，别用 PointToScreen——高 DPI 下会差 1.5 倍。</summary>
+        [DllImport("user32.dll")]
+        public static extern bool GetCursorPos(out POINT lpPoint);
+
+        [StructLayout(LayoutKind.Sequential)]
         public struct MONITORINFO
         {
             public int cbSize;
