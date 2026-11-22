@@ -48,15 +48,14 @@ jobs:
       - name: 打 zip
         shell: pwsh
         run: |
-          $tag = '${{ steps.ver.outputs.tag }}'
           $stage = 'stage/ww-tasker'
           New-Item -ItemType Directory -Force -Path $stage | Out-Null
           Copy-Item 'src/bin/Release/WuwaChecklist.exe' $stage
           Copy-Item 'data/quests.json' $stage
           Copy-Item 'README.md' $stage
           Copy-Item 'LICENSE' $stage
-          Compress-Archive -Path "$stage/*" -DestinationPath "ww-tasker-$tag.zip" -Force
-          Get-Item "ww-tasker-$tag.zip" | Select-Object Name, Length
+          Compress-Archive -Path "$stage/*" -DestinationPath "ww-tasker.zip" -Force
+          Get-Item "ww-tasker.zip" | Select-Object Name, Length
 
       - name: 生成更新日志
         uses: orhun/git-cliff-action@v4
@@ -81,6 +80,6 @@ jobs:
           tag_name: ${{ steps.ver.outputs.tag }}
           name: ${{ steps.ver.outputs.tag }}
           body_path: CHANGELOG.md
-          files: ww-tasker-${{ steps.ver.outputs.tag }}.zip
+          files: ww-tasker.zip
           draft: false
           prerelease: false
