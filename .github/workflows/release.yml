@@ -20,6 +20,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: ${{ github.event.inputs.tag || github.ref }}
 
       - name: 装 .NET SDK
         uses: actions/setup-dotnet@v4
@@ -34,14 +35,20 @@ jobs:
         run: |
           $exe = 'src/bin/Release/WuwaChecklist.exe'
           if (-not (Test-Path $exe)) { throw "没生成 exe：$exe" }
-          $len = (Get-Item $exe).Length
-          Write-Host "exe = $len bytes"
+          Write-Host "exe = $((Get-Item $exe).Length) bytes"
 
-      - name: 打 zip
+      - name: 定版本号
+        id: ver
         shell: pwsh
         run: |
           $tag = '${{ github.event.inputs.tag }}'
           if (-not $tag) { $tag = '${{ github.ref_name }}' }
+          "tag=$tag" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+
+      - name: 打 zip
+        shell: pwsh
+        run: |
+          $tag = '${{ steps.ver.outputs.tag }}'
           $stage = 'stage/ww-tasker'
           New-Item -ItemType Directory -Force -Path $stage | Out-Null
           Copy-Item 'src/bin/Release/WuwaChecklist.exe' $stage
@@ -49,26 +56,31 @@ jobs:
           Copy-Item 'README.md' $stage
           Copy-Item 'LICENSE' $stage
           Compress-Archive -Path "$stage/*" -DestinationPath "ww-tasker-$tag.zip" -Force
-          "TAG=$tag" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+          Get-Item "ww-tasker-$tag.zip" | Select-Object Name, Length
 
-      - name: 生成 CHANGELOG
+      - name: 生成更新日志
+        uses: orhun/git-cliff-action@v4
+        with:
+          config: cliff.toml
+          args: --latest --strip header
+        env:
+          OUTPUT: CHANGELOG.md
+          GITHUB_REPO: ${{ github.repository }}
+
+      - name: 没有日志就兜个底
         shell: pwsh
         run: |
-          $ver = '${{ github.event.inputs.tag }}'
-          if (-not $ver) { $ver = '${{ github.ref_name }}' }
-          Invoke-WebRequest -Uri 'https://github.com/orhun/git-cliff/releases/latest/download/git-cliff-x86_64-pc-windows-msvc.zip' -OutFile 'cliff.zip'
-          Expand-Archive 'cliff.zip' -DestinationPath 'cliffbin' -Force
-          $bin = Get-ChildItem -Path 'cliffbin' -Recurse -Filter 'git-cliff.exe' | Select-Object -First 1
-          & $bin.FullName --tag $ver --output CHANGELOG.md
-          if (-not (Test-Path 'CHANGELOG.md')) { '## ' + $ver | Out-File 'CHANGELOG.md' -Encoding utf8 }
-          Get-Content 'CHANGELOG.md' -TotalCount 20
+          if (-not (Test-Path 'CHANGELOG.md') -or (Get-Item 'CHANGELOG.md').Length -lt 8) {
+            "## ${{ steps.ver.outputs.tag }}" | Out-File 'CHANGELOG.md' -Encoding utf8
+          }
+          Get-Content 'CHANGELOG.md' -TotalCount 30
 
       - name: 发 Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.event.inputs.tag || github.ref_name }}
-          name: ${{ github.event.inputs.tag || github.ref_name }}
+          tag_name: ${{ steps.ver.outputs.tag }}
+          name: ${{ steps.ver.outputs.tag }}
           body_path: CHANGELOG.md
-          files: ww-tasker-${{ github.event.inputs.tag || github.ref_name }}.zip
+          files: ww-tasker-${{ steps.ver.outputs.tag }}.zip
           draft: false
           prerelease: false
