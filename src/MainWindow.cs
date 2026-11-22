@@ -683,8 +683,8 @@ namespace WuwaChecklist
                 ? QuestStore.RepoUrl + "/releases" : info.HtmlUrl));
             m.AddSeparator();
             m.AddHeader("怎么换");
-            m.AddItem("关掉旧的 exe，解压覆盖就行", null, true);
-            m.AddItem("存档不会丢（在 %APPDATA%\\ww-tasker）", null, true);
+            m.AddItem("关掉旧 exe，解压覆盖", null, true);
+            m.AddItem("存档不会丢", null, true);
             m.ShowAt(_panel);
         }
 
