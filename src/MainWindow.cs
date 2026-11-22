@@ -374,7 +374,7 @@ namespace WuwaChecklist
             SaveSoon();
         }
 
-        private void SetFoldedVisual(bool folded, bool animate)
+        internal void SetFoldedVisual(bool folded, bool animate)
         {
             Folded = folded;
             if (folded)

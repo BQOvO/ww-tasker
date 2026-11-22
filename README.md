@@ -6,6 +6,12 @@
 
 ![主界面](docs/shot-main.png)
 
+折叠起来就剩下一条：
+
+<img src="docs/shot-stripe.png" width="236" alt="折叠细条">
+
+这两张图都是程序自己离屏渲染的，以 2 倍分辨率存着，缩到 1 倍看才不糊。
+
 ## 它是干什么的
 
 清地图最烦的不是打怪，是「这个地区我到底还差哪个任务」。这软件就是干这个的：把每个地区要做的任务列成一张表，你做到哪就勾到哪，剩下的自然浮出来。
@@ -111,6 +117,17 @@ dotnet build src/WuwaChecklist.csproj -c Release
 python tools/make_icon.py
 dotnet build src/WuwaChecklist.csproj -c Release
 ```
+
+README 里那两张图是程序自己离屏渲染的，不是截屏——面板半透明，截屏会把桌面一起拍进去：
+
+```powershell
+# 主界面（392×440，底下垫一层代码画的假游戏底色）
+.\src\bin\Release\WuwaChecklist.exe --shot docs\shot-main.png 392 440
+# 折叠细条
+.\src\bin\Release\WuwaChecklist.exe --shot docs\shot-stripe.png --folded
+```
+
+加 `--plain` 就渲染成透明底 PNG，方便自己拿去别处用。
 
 ## 发版
 
