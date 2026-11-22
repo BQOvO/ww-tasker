@@ -3,24 +3,26 @@ using System.Collections.Generic;
 
 namespace WuwaChecklist
 {
-    /// <summary>任务类型。</summary>
+    /// <summary>任务类型。名字用鸣潮官方那套叫法，界面直接显示。</summary>
     internal static class QuestType
     {
-        public const string Main = "main";   // 主线
-        public const string Tale = "tale";   // 幕间
-        public const string Comp = "comp";   // 同行
-        public const string Side = "side";   // 支线
-        public const string Expl = "expl";   // 探索
+        public const string Main = "main";   // 潮汐任务
+        public const string Comp = "comp";   // 伴星任务
+        public const string Tale = "tale";   // 道引任务
+        public const string Side = "side";   // 纪闻任务
+        public const string Expl = "expl";   // 危行任务
+        public const string Hidden = "hidden"; // 隐藏任务（没追踪、要自己触发的那些）
 
         public static string Label(string t)
         {
             switch (t)
             {
-                case Main: return "主线";
-                case Tale: return "幕间";
-                case Comp: return "同行";
-                case Side: return "支线";
-                case Expl: return "探索";
+                case Main: return "潮汐";
+                case Comp: return "伴星";
+                case Tale: return "道引";
+                case Side: return "纪闻";
+                case Expl: return "危行";
+                case Hidden: return "隐藏";
                 default: return t ?? "";
             }
         }
@@ -31,11 +33,12 @@ namespace WuwaChecklist
             t = t.Trim().ToLowerInvariant();
             switch (t)
             {
-                case "main": case "主线": case "潮汐": return Main;
-                case "tale": case "幕间": return Tale;
-                case "comp": case "companion": case "同行": return Comp;
-                case "side": case "支线": return Side;
-                case "expl": case "exploration": case "探索": return Expl;
+                case "main": case "主线": case "潮汐": case "潮汐任务": return Main;
+                case "tale": case "幕间": case "道引": case "道引任务": return Tale;
+                case "comp": case "companion": case "同行": case "伴星": case "伴星任务": return Comp;
+                case "side": case "支线": case "纪闻": case "纪闻任务": return Side;
+                case "expl": case "exploration": case "探索": case "危行": case "危行任务": return Expl;
+                case "hidden": case "隐藏": case "隐藏任务": return Hidden;
                 default: return t;
             }
         }

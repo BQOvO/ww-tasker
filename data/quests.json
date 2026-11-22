@@ -1,99 +1,1738 @@
 {
   "schemaVersion": 1,
-  "gameVersion": "3.0",
-  "updatedAt": "2026-11-22T14:00:00",
-  "note": "占位数据。任务名先随手填，等功能跑通了再往真名灌。id 一旦定下来就不要再改——存档只记 id。同一个地区里名字一样的任务会被自动合成一条（去空白、不分大小写），合并前的旧 id 记在 mergedIds 里，老存档的进度会自动挪过来。",
+  "gameVersion": "3.8",
+  "updatedAt": "2026-11-22T16:36:07",
+  "note": "任务名来自库街区官方 wiki「任务合集」，已剔除日常任务和纯活动任务。地区归属：主线按 Fandom 中文站章节；带瑝珑地名的归该子图；其余按版本批次推断，可能有偏差。id 不要手改——存档只记 id。",
   "regions": [
     {
-      "id": "huanglong.jinzhou",
+      "id": "jz",
       "name": "今州",
       "chapter": "1.0 瑝珑",
       "order": 10,
       "quests": [
-        { "id": "jz.main.01", "name": "第一幕：嘤鸣初相召", "type": "main", "subArea": "今州城" },
-        { "id": "jz.main.02", "name": "第二幕：撞金止行阵", "type": "main", "subArea": "今州城" },
-        { "id": "jz.tale.01", "name": "追月节：月下之约", "type": "tale", "subArea": "今州城" },
-        { "id": "jz.side.01", "name": "消失的货运单", "type": "side", "subArea": "桃祈乡" },
-        { "id": "jz.side.02", "name": "石碑下的低语", "type": "side", "subArea": "无明海", "hidden": true, "note": "无追踪，需靠近触发" },
-        { "id": "jz.expl.01", "name": "雨夜的旅人", "type": "expl", "subArea": "今州城", "hidden": true, "note": "先做「追月节」才刷" }
+        {
+          "id": "jz-14904",
+          "name": "往岁乘霄醒惊蛰",
+          "type": "main"
+        },
+        {
+          "id": "jz-14492",
+          "name": "行路遇新知",
+          "type": "main"
+        },
+        {
+          "id": "jz-14804",
+          "name": "千里卷戎旌",
+          "type": "main"
+        },
+        {
+          "id": "jz-14395",
+          "name": "欲知天将雨",
+          "type": "main"
+        },
+        {
+          "id": "jz-12067",
+          "name": "庭际刀刃鸣",
+          "type": "main"
+        },
+        {
+          "id": "jz-12068",
+          "name": "奔策候残星",
+          "type": "main"
+        },
+        {
+          "id": "jz-12069",
+          "name": "撞金止行阵",
+          "type": "main"
+        },
+        {
+          "id": "jz-12070",
+          "name": "嘤鸣初相召",
+          "type": "main"
+        },
+        {
+          "id": "jz-12048",
+          "name": "万象新声",
+          "type": "main"
+        },
+        {
+          "id": "jz-14390",
+          "name": "独行深渊",
+          "type": "tale"
+        },
+        {
+          "id": "jz-14280",
+          "name": "第二索拉",
+          "type": "tale"
+        },
+        {
+          "id": "jz-12050",
+          "name": "再会，飞檐走壁",
+          "type": "tale"
+        },
+        {
+          "id": "jz-12051",
+          "name": "预备！飞檐走壁",
+          "type": "tale"
+        },
+        {
+          "id": "jz-12052",
+          "name": "圆台命题",
+          "type": "tale"
+        },
+        {
+          "id": "jz-12053",
+          "name": "初试先行者",
+          "type": "tale"
+        },
+        {
+          "id": "jz-12054",
+          "name": "心之集域·异想奇境",
+          "type": "tale"
+        },
+        {
+          "id": "jz-12055",
+          "name": "旧日的余音",
+          "type": "tale"
+        },
+        {
+          "id": "jz-12057",
+          "name": "索拉等阶突破",
+          "type": "tale"
+        },
+        {
+          "id": "jz-12064",
+          "name": "荣誉大厨·回忆的味道",
+          "type": "tale"
+        },
+        {
+          "id": "jz-14881",
+          "name": "暂熄的黑炎",
+          "type": "side"
+        },
+        {
+          "id": "jz-14805",
+          "name": "失踪的孤鸿",
+          "type": "side"
+        },
+        {
+          "id": "jz-14388",
+          "name": "跃动吧，龟舞团！",
+          "type": "side"
+        },
+        {
+          "id": "jz-14281",
+          "name": "谷地的花海",
+          "type": "side"
+        },
+        {
+          "id": "jz-14282",
+          "name": "特色饮品",
+          "type": "side"
+        },
+        {
+          "id": "jz-14283",
+          "name": "一触即炸",
+          "type": "side"
+        },
+        {
+          "id": "jz-14284",
+          "name": "营地突袭",
+          "type": "side"
+        },
+        {
+          "id": "jz-14285",
+          "name": "沉没的历史",
+          "type": "side"
+        },
+        {
+          "id": "jz-14286",
+          "name": "修复位于无名湾灯塔",
+          "type": "side"
+        },
+        {
+          "id": "jz-14287",
+          "name": "角斗本色",
+          "type": "side"
+        },
+        {
+          "id": "jz-14883",
+          "name": "传说中的密方机关术·三",
+          "type": "side"
+        },
+        {
+          "id": "jz-14288",
+          "name": "传说中的密方机关术·二",
+          "type": "side"
+        },
+        {
+          "id": "jz-14289",
+          "name": "传说中的密方机关术·一",
+          "type": "side"
+        },
+        {
+          "id": "jz-14290",
+          "name": "曲问趣答·三",
+          "type": "side"
+        },
+        {
+          "id": "jz-14291",
+          "name": "曲问趣答·二",
+          "type": "side"
+        },
+        {
+          "id": "jz-12082",
+          "name": "曲问趣答-一",
+          "type": "side"
+        },
+        {
+          "id": "jz-14292",
+          "name": "出工日的厄运",
+          "type": "side"
+        },
+        {
+          "id": "jz-14293",
+          "name": "于古榕的月光下",
+          "type": "side"
+        },
+        {
+          "id": "jz-14294",
+          "name": "清刃奇侠",
+          "type": "side"
+        },
+        {
+          "id": "jz-14295",
+          "name": "今州游学·咕咕河豚",
+          "type": "side"
+        },
+        {
+          "id": "jz-14296",
+          "name": "过去即是明天·后日谈",
+          "type": "side"
+        },
+        {
+          "id": "jz-14277",
+          "name": "当月光照进森林",
+          "type": "side"
+        },
+        {
+          "id": "jz-14278",
+          "name": "试冶合金",
+          "type": "side"
+        },
+        {
+          "id": "jz-14279",
+          "name": "少年尚知读书时",
+          "type": "side"
+        },
+        {
+          "id": "jz-12105",
+          "name": "倾听动物之声·续·鸟语翻译",
+          "type": "side"
+        },
+        {
+          "id": "jz-12106",
+          "name": "倾听动物之声·蛙语翻译",
+          "type": "side"
+        },
+        {
+          "id": "jz-12107",
+          "name": "倾听动物之声·鱼语翻译",
+          "type": "side"
+        },
+        {
+          "id": "jz-12108",
+          "name": "倾听动物之声·蜥语翻译",
+          "type": "side"
+        },
+        {
+          "id": "jz-12109",
+          "name": "倾听动物之声·鸟语翻译",
+          "type": "side"
+        },
+        {
+          "id": "jz-12110",
+          "name": "暗探潜踪",
+          "type": "side"
+        },
+        {
+          "id": "jz-12071",
+          "name": "倾听动物之声·犬语翻译",
+          "type": "side"
+        },
+        {
+          "id": "jz-12072",
+          "name": "倾听动物之声·兔语翻译",
+          "type": "side"
+        },
+        {
+          "id": "jz-12073",
+          "name": "天上掉馅饼？·一",
+          "type": "side"
+        },
+        {
+          "id": "jz-14393",
+          "name": "射击派对",
+          "type": "side"
+        },
+        {
+          "id": "jz-12075",
+          "name": "今夜无人应答",
+          "type": "side"
+        },
+        {
+          "id": "jz-12076",
+          "name": "等待戈铎",
+          "type": "side"
+        },
+        {
+          "id": "jz-12077",
+          "name": "逐猿委托",
+          "type": "side"
+        },
+        {
+          "id": "jz-12078",
+          "name": "信使",
+          "type": "side"
+        },
+        {
+          "id": "jz-12079",
+          "name": "枪头测试进阶挑战",
+          "type": "side"
+        },
+        {
+          "id": "jz-12080",
+          "name": "过去即是明天·后",
+          "type": "side"
+        },
+        {
+          "id": "jz-12081",
+          "name": "重启雷达",
+          "type": "side"
+        },
+        {
+          "id": "jz-12083",
+          "name": "调查营地配给失窃一事",
+          "type": "side"
+        },
+        {
+          "id": "jz-12090",
+          "name": "永不消逝的琴声",
+          "type": "side"
+        },
+        {
+          "id": "jz-12091",
+          "name": "过去即是明天·前",
+          "type": "side"
+        },
+        {
+          "id": "jz-12092",
+          "name": "倾听动物之声·猫语翻译",
+          "type": "side"
+        },
+        {
+          "id": "jz-12093",
+          "name": "今州刊物·第二期",
+          "type": "side"
+        },
+        {
+          "id": "jz-12094",
+          "name": "今州刊物·创刊号",
+          "type": "side"
+        },
+        {
+          "id": "jz-12095",
+          "name": "银发声骸训练师·三",
+          "type": "side"
+        },
+        {
+          "id": "jz-12096",
+          "name": "银发声骸训练师·二",
+          "type": "side"
+        },
+        {
+          "id": "jz-12097",
+          "name": "银发声骸训练师·一",
+          "type": "side"
+        },
+        {
+          "id": "jz-12049",
+          "name": "百味荟萃",
+          "type": "side"
+        },
+        {
+          "id": "jz-12056",
+          "name": "拍忆今州",
+          "type": "side"
+        },
+        {
+          "id": "jz-12058",
+          "name": "猎取残象之人",
+          "type": "side"
+        },
+        {
+          "id": "jz-14383",
+          "name": "照龙映珠·最后的仪式",
+          "type": "expl"
+        },
+        {
+          "id": "jz-14384",
+          "name": "照龙映珠·拱形山石之巅",
+          "type": "expl"
+        },
+        {
+          "id": "jz-14385",
+          "name": "照龙映珠·浅滩群岛之间",
+          "type": "expl"
+        },
+        {
+          "id": "jz-14386",
+          "name": "照龙映珠·瀑布汇流之地",
+          "type": "expl"
+        },
+        {
+          "id": "jz-14387",
+          "name": "照龙映珠·黄白交界之处",
+          "type": "expl"
+        },
+        {
+          "id": "jz-14389",
+          "name": "照龙映珠",
+          "type": "expl"
+        },
+        {
+          "id": "jz-12059",
+          "name": "旧日之影",
+          "type": "expl"
+        },
+        {
+          "id": "jz-12060",
+          "name": "平静日常下的隐患",
+          "type": "expl"
+        },
+        {
+          "id": "jz-12061",
+          "name": "当森林不再阴霾",
+          "type": "expl"
+        },
+        {
+          "id": "jz-12062",
+          "name": "彼岸的哀歌",
+          "type": "expl"
+        },
+        {
+          "id": "jz-12063",
+          "name": "使命必达",
+          "type": "expl"
+        }
       ]
     },
     {
-      "id": "huanglong.beiluoye",
+      "id": "bly",
       "name": "北落野",
       "chapter": "1.0 瑝珑",
       "order": 20,
       "quests": [
-        { "id": "bly.main.01", "name": "第三幕：焚焰照野", "type": "main", "subArea": "焚焰海" },
-        { "id": "bly.side.01", "name": "拾荒者的账本", "type": "side", "subArea": "荒弃营地" },
-        { "id": "bly.expl.01", "name": "走失的机械犬", "type": "expl", "subArea": "锈蚀谷地", "hidden": true, "note": "无追踪" }
+        {
+          "id": "bly-14275",
+          "name": "古今多少故事·北落野",
+          "type": "side",
+          "subArea": "北落野"
+        }
       ]
     },
     {
-      "id": "huanglong.huanshidigao",
+      "id": "hsgd",
       "name": "荒石高地",
       "chapter": "1.0 瑝珑",
       "order": 30,
       "quests": [
-        { "id": "hsgd.main.01", "name": "幕间：旧日的回声", "type": "tale", "subArea": "云陵谷" },
-        { "id": "hsgd.side.01", "name": "采石人的执念", "type": "side", "subArea": "石场" }
+        {
+          "id": "hsgd-14394",
+          "name": "修复荒石高地灯塔",
+          "type": "side"
+        },
+        {
+          "id": "hsgd-14299",
+          "name": "古今多少故事·荒石高地",
+          "type": "side",
+          "subArea": "荒石高地"
+        }
       ]
     },
     {
-      "id": "huanglong.wuminghai",
-      "name": "无明海",
-      "chapter": "1.1 瑝珑",
+      "id": "wgs",
+      "name": "无光之森",
+      "chapter": "1.0 瑝珑",
       "order": 40,
       "quests": [
-        { "id": "wmh.main.01", "name": "同行：潮汐的彼端", "type": "comp", "subArea": "潮音岛" },
-        { "id": "wmh.side.01", "name": "沉船的守夜人", "type": "side", "subArea": "沉船湾" },
-        { "id": "wmh.side.02", "name": "灯塔里的第七封信", "type": "side", "subArea": "白灯塔", "hidden": true, "note": "要按顺序点亮三盏灯" }
+        {
+          "id": "wgs-14297",
+          "name": "古今多少故事·无光之森",
+          "type": "side",
+          "subArea": "无光之森"
+        }
       ]
     },
     {
-      "id": "huanglong.heihaian",
-      "name": "黑海岸",
-      "chapter": "1.2 黑海岸",
+      "id": "hks",
+      "name": "虎口山脉",
+      "chapter": "1.0 瑝珑",
       "order": 50,
       "quests": [
-        { "id": "hha.main.01", "name": "第一幕：黑色潮汐", "type": "main", "subArea": "黑海岸" },
-        { "id": "hha.main.02", "name": "第二幕：残星之诺", "type": "main", "subArea": "残星会" },
-        { "id": "hha.side.01", "name": "废墟里的唱片", "type": "side", "subArea": "旧城区" },
-        { "id": "hha.expl.01", "name": "海雾中的低吟", "type": "expl", "hidden": true, "note": "只在下雨天出现" }
+        {
+          "id": "hks-14298",
+          "name": "古今多少故事·虎口山脉",
+          "type": "side",
+          "subArea": "虎口山脉"
+        }
       ]
     },
     {
-      "id": "rinascita.linnaxita",
-      "name": "黎那汐塔",
-      "chapter": "2.0 黎那汐塔",
+      "id": "ynz",
+      "name": "怨鸟泽",
+      "chapter": "1.0 瑝珑",
       "order": 60,
       "quests": [
-        { "id": "lnxt.main.01", "name": "第一幕：圣城之门", "type": "main", "subArea": "拉古那" },
-        { "id": "lnxt.main.02", "name": "第二幕：荒诞的盛宴", "type": "main", "subArea": "拉古那" },
-        { "id": "lnxt.tale.01", "name": "幕间：面具之下", "type": "tale", "subArea": "格玛尼" },
-        { "id": "lnxt.side.01", "name": "面具匠人的委托", "type": "side", "subArea": "格玛尼" },
-        { "id": "lnxt.side.02", "name": "下水道的第九只猫", "type": "side", "subArea": "拉古那地下", "hidden": true, "note": "无追踪" }
+        {
+          "id": "ynz-14300",
+          "name": "古今多少故事·怨鸟泽",
+          "type": "side",
+          "subArea": "怨鸟泽"
+        }
       ]
     },
     {
-      "id": "rinascita.luoyibingyuan",
-      "name": "罗伊冰原",
-      "chapter": "2.1 黎那汐塔",
+      "id": "ylg",
+      "name": "云陵谷",
+      "chapter": "1.0 瑝珑",
       "order": 70,
       "quests": [
-        { "id": "lyby.main.01", "name": "第一幕：永冻的回声", "type": "main", "subArea": "霜痕谷" },
-        { "id": "lyby.side.01", "name": "凿冰人的女儿", "type": "side", "subArea": "营地" },
-        { "id": "lyby.side.02", "name": "冰层下的争执", "type": "side", "subArea": "裂谷", "hidden": true }
+        {
+          "id": "ylg-14274",
+          "name": "古今多少故事·云陵谷",
+          "type": "side",
+          "subArea": "云陵谷"
+        }
       ]
     },
     {
-      "id": "rinascita.lahailuo",
-      "name": "拉海洛",
-      "chapter": "3.0 拉海洛",
+      "id": "zqtd",
+      "name": "中曲台地",
+      "chapter": "1.0 瑝珑",
       "order": 80,
       "quests": [
-        { "id": "lhl.main.01", "name": "第一幕：空域之上", "type": "main", "subArea": "浮空港" },
-        { "id": "lhl.side.01", "name": "浮岛的信使", "type": "side", "subArea": "浮空港" }
+        {
+          "id": "zqtd-14301",
+          "name": "古今多少故事·中曲台地",
+          "type": "side",
+          "subArea": "中曲台地"
+        }
+      ]
+    },
+    {
+      "id": "gxgs",
+      "name": "归墟港市",
+      "chapter": "1.0 瑝珑",
+      "order": 90,
+      "quests": [
+        {
+          "id": "gxgs-14276",
+          "name": "古今多少故事·归墟港市",
+          "type": "side",
+          "subArea": "归墟港市"
+        }
+      ]
+    },
+    {
+      "id": "hha",
+      "name": "黑海岸",
+      "chapter": "1.3 黑海岸",
+      "order": 100,
+      "quests": [
+        {
+          "id": "hha-19159",
+          "name": "星光流转于眼眸之间",
+          "type": "main"
+        },
+        {
+          "id": "hha-19160",
+          "name": "曙光停摆于荒地之上",
+          "type": "main"
+        },
+        {
+          "id": "hha-16900",
+          "name": "行至海岸尽头",
+          "type": "main"
+        },
+        {
+          "id": "hha-19158",
+          "name": "继续探索穗波市",
+          "type": "tale"
+        },
+        {
+          "id": "hha-18859",
+          "name": "黎明之星（尾声）",
+          "type": "side",
+          "hidden": true
+        },
+        {
+          "id": "hha-18860",
+          "name": "黎明之星（四）",
+          "type": "side",
+          "hidden": true
+        },
+        {
+          "id": "hha-18857",
+          "name": "黎明之星·留在黑夜中的人（下）",
+          "type": "side",
+          "hidden": true
+        },
+        {
+          "id": "hha-18858",
+          "name": "黎明之星·留在黑夜中的人（上）",
+          "type": "side",
+          "hidden": true
+        },
+        {
+          "id": "hha-18861",
+          "name": "黎明之星（三）",
+          "type": "side",
+          "hidden": true
+        },
+        {
+          "id": "hha-18862",
+          "name": "黎明之星（二）",
+          "type": "side",
+          "hidden": true
+        },
+        {
+          "id": "hha-18863",
+          "name": "黎明之星（一）",
+          "type": "side",
+          "hidden": true
+        },
+        {
+          "id": "hha-18849",
+          "name": "奏者的愿望",
+          "type": "side"
+        },
+        {
+          "id": "hha-18852",
+          "name": "古今多少故事·阿维纽林",
+          "type": "side",
+          "subArea": "阿维纽林",
+          "hidden": true
+        },
+        {
+          "id": "hha-15313",
+          "name": "推演的边界",
+          "type": "side"
+        }
+      ]
+    },
+    {
+      "id": "lnxt",
+      "name": "黎那汐塔",
+      "chapter": "2.0 黎那汐塔",
+      "order": 110,
+      "quests": [
+        {
+          "id": "lnxt-18846",
+          "name": "独在异乡为异客",
+          "type": "main"
+        },
+        {
+          "id": "lnxt-18847",
+          "name": "暗潮将映的黎明",
+          "type": "main"
+        },
+        {
+          "id": "lnxt-18848",
+          "name": "已逝的必将归来",
+          "type": "main"
+        },
+        {
+          "id": "lnxt-17985",
+          "name": "今夜，注定属于月亮",
+          "type": "main"
+        },
+        {
+          "id": "lnxt-17986",
+          "name": "灼我以烈阳",
+          "type": "main"
+        },
+        {
+          "id": "lnxt-17804",
+          "name": "铁锈，剑与烈阳",
+          "type": "main"
+        },
+        {
+          "id": "lnxt-17479",
+          "name": "捕梦于神秘园中",
+          "type": "main"
+        },
+        {
+          "id": "lnxt-17390",
+          "name": "燃烧的心",
+          "type": "main"
+        },
+        {
+          "id": "lnxt-17385",
+          "name": "荣耀暗面",
+          "type": "main"
+        },
+        {
+          "id": "lnxt-16894",
+          "name": "圣者，忤逆者，告死者",
+          "type": "main"
+        },
+        {
+          "id": "lnxt-16895",
+          "name": "老人鱼海",
+          "type": "main"
+        },
+        {
+          "id": "lnxt-16896",
+          "name": "夜与昼，均请摘下面纱",
+          "type": "main"
+        },
+        {
+          "id": "lnxt-16897",
+          "name": "昔我悲伤，今却歌唱",
+          "type": "main"
+        },
+        {
+          "id": "lnxt-16898",
+          "name": "那神圣微风时常吹入",
+          "type": "main"
+        },
+        {
+          "id": "lnxt-16899",
+          "name": "如一叶小舟穿行于茫茫海洋",
+          "type": "main"
+        },
+        {
+          "id": "lnxt-17480",
+          "name": "灵魂归还汪洋",
+          "type": "tale"
+        },
+        {
+          "id": "lnxt-17481",
+          "name": "旌旗不落",
+          "type": "tale"
+        },
+        {
+          "id": "lnxt-16920",
+          "name": "当色彩消逝",
+          "type": "tale"
+        },
+        {
+          "id": "lnxt-16921",
+          "name": "爱乐之骸",
+          "type": "tale"
+        },
+        {
+          "id": "lnxt-16922",
+          "name": "邂逅布偶村",
+          "type": "tale"
+        },
+        {
+          "id": "lnxt-16923",
+          "name": "巡礼之梦·其二",
+          "type": "tale"
+        },
+        {
+          "id": "lnxt-16924",
+          "name": "巡礼之梦·其一",
+          "type": "tale"
+        },
+        {
+          "id": "lnxt-18377",
+          "name": "画中奇藏",
+          "type": "side",
+          "hidden": true
+        },
+        {
+          "id": "lnxt-18379",
+          "name": "古今多少故事·槲生半岛",
+          "type": "side",
+          "subArea": "槲生半岛",
+          "hidden": true
+        },
+        {
+          "id": "lnxt-18380",
+          "name": "古今多少故事·拂风水畔",
+          "type": "side",
+          "subArea": "拂风水畔",
+          "hidden": true
+        },
+        {
+          "id": "lnxt-18381",
+          "name": "古今多少故事·埃弗拉德金库",
+          "type": "side",
+          "subArea": "埃弗拉德金库",
+          "hidden": true
+        },
+        {
+          "id": "lnxt-18382",
+          "name": "古今多少故事·赞悼圣迹",
+          "type": "side",
+          "subArea": "赞悼圣迹",
+          "hidden": true
+        },
+        {
+          "id": "lnxt-18383",
+          "name": "古今多少故事·悲叹墓岛",
+          "type": "side",
+          "subArea": "悲叹墓岛",
+          "hidden": true
+        },
+        {
+          "id": "lnxt-18384",
+          "name": "古今多少故事·狄萨莱海脊",
+          "type": "side",
+          "subArea": "狄萨莱海脊",
+          "hidden": true
+        },
+        {
+          "id": "lnxt-18385",
+          "name": "古今多少故事·氤柔水境",
+          "type": "side",
+          "subArea": "氤柔水境",
+          "hidden": true
+        },
+        {
+          "id": "lnxt-18386",
+          "name": "古今多少故事·拉古那城（隐藏）",
+          "type": "side",
+          "subArea": "拉古那城",
+          "hidden": true
+        },
+        {
+          "id": "lnxt-18344",
+          "name": "朽剑之梦·尾声",
+          "type": "side"
+        },
+        {
+          "id": "lnxt-18345",
+          "name": "朽剑之梦·下",
+          "type": "side"
+        },
+        {
+          "id": "lnxt-18346",
+          "name": "朽剑之梦·上",
+          "type": "side"
+        },
+        {
+          "id": "lnxt-18347",
+          "name": "以呼嚎致意",
+          "type": "side"
+        },
+        {
+          "id": "lnxt-18348",
+          "name": "烬潮之梦",
+          "type": "side"
+        },
+        {
+          "id": "lnxt-17554",
+          "name": "千道门扉的异想",
+          "type": "side"
+        },
+        {
+          "id": "lnxt-16934",
+          "name": "重建布偶村·四期",
+          "type": "side"
+        },
+        {
+          "id": "lnxt-16935",
+          "name": "重建布偶村·三期",
+          "type": "side"
+        },
+        {
+          "id": "lnxt-16936",
+          "name": "重建布偶村·二期",
+          "type": "side"
+        },
+        {
+          "id": "lnxt-16937",
+          "name": "重建布偶村·一期",
+          "type": "side"
+        },
+        {
+          "id": "lnxt-16938",
+          "name": "虽然色彩无形",
+          "type": "side"
+        },
+        {
+          "id": "lnxt-16925",
+          "name": "失落之影",
+          "type": "side"
+        },
+        {
+          "id": "lnxt-16918",
+          "name": "最佳观众",
+          "type": "side"
+        },
+        {
+          "id": "lnxt-16919",
+          "name": "骑士末歌",
+          "type": "side"
+        },
+        {
+          "id": "lnxt-16907",
+          "name": "潮心循迹",
+          "type": "side"
+        },
+        {
+          "id": "lnxt-16908",
+          "name": "拉古那假日",
+          "type": "side"
+        },
+        {
+          "id": "lnxt-16909",
+          "name": "往日幻影",
+          "type": "side"
+        },
+        {
+          "id": "lnxt-16910",
+          "name": "旧日的试炼",
+          "type": "side"
+        },
+        {
+          "id": "lnxt-16911",
+          "name": "梦境症候群",
+          "type": "side"
+        },
+        {
+          "id": "lnxt-16885",
+          "name": "布偶小队历险记",
+          "type": "side"
+        },
+        {
+          "id": "lnxt-17540",
+          "name": "若流星盛放",
+          "type": "expl"
+        },
+        {
+          "id": "lnxt-17516",
+          "name": "渊底之火",
+          "type": "expl"
+        },
+        {
+          "id": "lnxt-16912",
+          "name": "氤柔云海之歌·虹彩之章",
+          "type": "expl"
+        },
+        {
+          "id": "lnxt-16913",
+          "name": "高塔的幽影·统驭冠塔",
+          "type": "expl"
+        },
+        {
+          "id": "lnxt-16914",
+          "name": "高塔的幽影·回声冠塔",
+          "type": "expl"
+        },
+        {
+          "id": "lnxt-16915",
+          "name": "高塔的幽影·暮光冠塔",
+          "type": "expl"
+        },
+        {
+          "id": "lnxt-18376",
+          "name": "神秘的螃蟹祭坛委托",
+          "type": "hidden",
+          "hidden": true
+        },
+        {
+          "id": "lnxt-18378",
+          "name": "白月？绯月？",
+          "type": "hidden",
+          "hidden": true
+        }
+      ]
+    },
+    {
+      "id": "qq",
+      "name": "七丘",
+      "chapter": "2.4 黎那汐塔",
+      "order": 120,
+      "quests": [
+        {
+          "id": "qq-17397",
+          "name": "巡礼之梦·尾声",
+          "type": "tale"
+        },
+        {
+          "id": "qq-17398",
+          "name": "钳形激战无双版",
+          "type": "tale"
+        },
+        {
+          "id": "qq-17394",
+          "name": "奇怪的三兄弟-沃德蒂",
+          "type": "side"
+        },
+        {
+          "id": "qq-17395",
+          "name": "奇怪的三兄弟-沃德尔戈",
+          "type": "side"
+        },
+        {
+          "id": "qq-17396",
+          "name": "奇怪的三兄弟-沃德戈",
+          "type": "side"
+        },
+        {
+          "id": "qq-17399",
+          "name": "约兰的战术测试",
+          "type": "side"
+        },
+        {
+          "id": "qq-17400",
+          "name": "卡带收藏家",
+          "type": "side"
+        },
+        {
+          "id": "qq-17401",
+          "name": "数据飞檐",
+          "type": "side"
+        },
+        {
+          "id": "qq-17402",
+          "name": "海风中失落的湛蓝回声·下",
+          "type": "side"
+        },
+        {
+          "id": "qq-17403",
+          "name": "海风中失落的湛蓝回声·上",
+          "type": "side"
+        },
+        {
+          "id": "qq-17380",
+          "name": "天穹下的相会",
+          "type": "expl"
+        },
+        {
+          "id": "qq-17381",
+          "name": "荣耀尽头的天空·守望之塔",
+          "type": "expl"
+        },
+        {
+          "id": "qq-17382",
+          "name": "荣耀尽头的天空·试炼之地",
+          "type": "expl"
+        },
+        {
+          "id": "qq-17383",
+          "name": "风归高天之所",
+          "type": "expl"
+        },
+        {
+          "id": "qq-17329",
+          "name": "守望永恒",
+          "type": "expl"
+        }
+      ]
+    },
+    {
+      "id": "sgys",
+      "name": "桑古伊斯狩原",
+      "chapter": "2.6 黎那汐塔",
+      "order": 130,
+      "quests": [
+        {
+          "id": "sgys-17854",
+          "name": "布偶远征队",
+          "type": "tale"
+        },
+        {
+          "id": "sgys-17815",
+          "name": "出发！成为捕鱼达人！",
+          "type": "tale"
+        },
+        {
+          "id": "sgys-17996",
+          "name": "面包与圣事",
+          "type": "side"
+        },
+        {
+          "id": "sgys-17997",
+          "name": "现状与未来",
+          "type": "side"
+        },
+        {
+          "id": "sgys-17998",
+          "name": "暗海勘察",
+          "type": "side"
+        },
+        {
+          "id": "sgys-17987",
+          "name": "三个愿望",
+          "type": "side"
+        },
+        {
+          "id": "sgys-17988",
+          "name": "我的搭档",
+          "type": "side"
+        },
+        {
+          "id": "sgys-17989",
+          "name": "神奇啪嗒在哪里？",
+          "type": "side"
+        },
+        {
+          "id": "sgys-17990",
+          "name": "布偶小队堂堂复活",
+          "type": "side"
+        },
+        {
+          "id": "sgys-17855",
+          "name": "踏上古龙之道",
+          "type": "side"
+        },
+        {
+          "id": "sgys-17856",
+          "name": "萨姆沙斯的宝物",
+          "type": "side"
+        },
+        {
+          "id": "sgys-17857",
+          "name": "命运的决斗",
+          "type": "side"
+        },
+        {
+          "id": "sgys-17806",
+          "name": "岛上的面具人",
+          "type": "side"
+        },
+        {
+          "id": "sgys-17807",
+          "name": "水手的遗藏",
+          "type": "side"
+        },
+        {
+          "id": "sgys-17808",
+          "name": "钓鱼风波",
+          "type": "side"
+        },
+        {
+          "id": "sgys-17809",
+          "name": "整点鱼条",
+          "type": "side"
+        },
+        {
+          "id": "sgys-17811",
+          "name": "当当蟹怪味挑战",
+          "type": "side"
+        },
+        {
+          "id": "sgys-17812",
+          "name": "世界漂流瓶",
+          "type": "side"
+        },
+        {
+          "id": "sgys-17816",
+          "name": "战陵追痕",
+          "type": "side"
+        },
+        {
+          "id": "sgys-17817",
+          "name": "同行忆旅",
+          "type": "side"
+        },
+        {
+          "id": "sgys-17818",
+          "name": "追迹阿维纽林",
+          "type": "side"
+        },
+        {
+          "id": "sgys-17813",
+          "name": "叶落无声",
+          "type": "expl"
+        }
+      ]
+    },
+    {
+      "id": "lhl",
+      "name": "拉海洛",
+      "chapter": "3.0 拉海洛",
+      "order": 140,
+      "quests": [
+        {
+          "id": "lhl-24514",
+          "name": "日光落处",
+          "type": "main"
+        },
+        {
+          "id": "lhl-24522",
+          "name": "远航星",
+          "type": "main"
+        },
+        {
+          "id": "lhl-22842",
+          "name": "我们选择天空",
+          "type": "main"
+        },
+        {
+          "id": "lhl-22843",
+          "name": "愿系铃中·续",
+          "type": "main"
+        },
+        {
+          "id": "lhl-22844",
+          "name": "愿系铃中",
+          "type": "main"
+        },
+        {
+          "id": "lhl-22845",
+          "name": "昨夜群星",
+          "type": "main"
+        },
+        {
+          "id": "lhl-22846",
+          "name": "影下不落的黄金",
+          "type": "main"
+        },
+        {
+          "id": "lhl-22847",
+          "name": "明日摇曳的绯影",
+          "type": "main"
+        },
+        {
+          "id": "lhl-22848",
+          "name": "影面颠倒的兔影",
+          "type": "main"
+        },
+        {
+          "id": "lhl-22849",
+          "name": "在熔解的夜空下",
+          "type": "main"
+        },
+        {
+          "id": "lhl-19815",
+          "name": "致第二次日出",
+          "type": "main"
+        },
+        {
+          "id": "lhl-19816",
+          "name": "冰原下的星炬",
+          "type": "main"
+        },
+        {
+          "id": "lhl-19817",
+          "name": "未知的既感",
+          "type": "main"
+        },
+        {
+          "id": "lhl-19824",
+          "name": "关闭开关是打开开关",
+          "type": "tale"
+        },
+        {
+          "id": "lhl-19825",
+          "name": "青实归林",
+          "type": "tale"
+        },
+        {
+          "id": "lhl-19826",
+          "name": "载具驾驶教学",
+          "type": "tale"
+        },
+        {
+          "id": "lhl-19827",
+          "name": "净化终声残卷",
+          "type": "tale"
+        },
+        {
+          "id": "lhl-19828",
+          "name": "开辟测界之路",
+          "type": "tale"
+        },
+        {
+          "id": "lhl-19829",
+          "name": "进入虚拟作战领域！",
+          "type": "tale"
+        },
+        {
+          "id": "lhl-22850",
+          "name": "海上漂流瓶",
+          "type": "side"
+        },
+        {
+          "id": "lhl-20667",
+          "name": "不思议怪谈·迷失在雾中隧道",
+          "type": "side",
+          "hidden": true
+        },
+        {
+          "id": "lhl-20668",
+          "name": "不思议怪谈·造路悬仪暴乱中",
+          "type": "side",
+          "hidden": true
+        },
+        {
+          "id": "lhl-20669",
+          "name": "不思议怪谈·无法离开的教室",
+          "type": "side",
+          "hidden": true
+        },
+        {
+          "id": "lhl-20670",
+          "name": "不思议怪谈·驶向何处的列车",
+          "type": "side",
+          "hidden": true
+        },
+        {
+          "id": "lhl-20671",
+          "name": "不思议怪谈·匿名的邀约者",
+          "type": "side",
+          "hidden": true
+        },
+        {
+          "id": "lhl-20045",
+          "name": "被光影定格的瞬间",
+          "type": "side"
+        },
+        {
+          "id": "lhl-20046",
+          "name": "寻迹于智慧之光",
+          "type": "side"
+        },
+        {
+          "id": "lhl-20047",
+          "name": "星原定格",
+          "type": "side"
+        },
+        {
+          "id": "lhl-19335",
+          "name": "天际奇旅",
+          "type": "side"
+        },
+        {
+          "id": "lhl-20672",
+          "name": "光的来处",
+          "type": "expl"
+        },
+        {
+          "id": "lhl-20048",
+          "name": "失落的乐声",
+          "type": "expl"
+        },
+        {
+          "id": "lhl-20049",
+          "name": "车手一号",
+          "type": "expl"
+        },
+        {
+          "id": "lhl-19850",
+          "name": "推进深空测界台·悬台工程",
+          "type": "expl"
+        },
+        {
+          "id": "lhl-19851",
+          "name": "深空测界台：拓原工程",
+          "type": "expl"
+        },
+        {
+          "id": "lhl-19852",
+          "name": "启动吧！造陆悬仪！",
+          "type": "expl"
+        }
+      ]
+    },
+    {
+      "id": "lyby",
+      "name": "罗伊冰原",
+      "chapter": "3.3 拉海洛",
+      "order": 150,
+      "quests": [
+        {
+          "id": "lyby-24562",
+          "name": "终焉矩阵",
+          "type": "tale"
+        },
+        {
+          "id": "lyby-24563",
+          "name": "钴蓝雪线的订单",
+          "type": "side"
+        },
+        {
+          "id": "lyby-24564",
+          "name": "升起的烟花，该从哪边看？",
+          "type": "side"
+        },
+        {
+          "id": "lyby-24566",
+          "name": "寻猫大师",
+          "type": "side",
+          "hidden": true
+        },
+        {
+          "id": "lyby-24515",
+          "name": "冰原往事",
+          "type": "side"
+        },
+        {
+          "id": "lyby-24516",
+          "name": "来自雪白深处",
+          "type": "side"
+        },
+        {
+          "id": "lyby-24517",
+          "name": "冲破寒冰之镜",
+          "type": "side"
+        },
+        {
+          "id": "lyby-24518",
+          "name": "冰川存忆",
+          "type": "side"
+        },
+        {
+          "id": "lyby-24519",
+          "name": "谢谢，再见，世界上的另一个我",
+          "type": "side"
+        },
+        {
+          "id": "lyby-24523",
+          "name": "世界上最近的海",
+          "type": "side"
+        },
+        {
+          "id": "lyby-21879",
+          "name": "拂光搁浅的旧讯·后日谈",
+          "type": "side"
+        },
+        {
+          "id": "lyby-21880",
+          "name": "深空孵化员",
+          "type": "side"
+        },
+        {
+          "id": "lyby-21881",
+          "name": "跟进虚质科学部的研究",
+          "type": "side"
+        },
+        {
+          "id": "lyby-21882",
+          "name": "跟进罗伊族学生的研究情况",
+          "type": "side"
+        },
+        {
+          "id": "lyby-21883",
+          "name": "跟进生态维持学科群的研究",
+          "type": "side"
+        },
+        {
+          "id": "lyby-21884",
+          "name": "跟进光能矩阵学科群的研究",
+          "type": "side"
+        },
+        {
+          "id": "lyby-21885",
+          "name": "日灵与“夜灵”",
+          "type": "side"
+        },
+        {
+          "id": "lyby-21886",
+          "name": "孤单的日灵",
+          "type": "side"
+        },
+        {
+          "id": "lyby-21887",
+          "name": "三只日灵",
+          "type": "side"
+        },
+        {
+          "id": "lyby-21888",
+          "name": "跳舞的日灵",
+          "type": "side"
+        },
+        {
+          "id": "lyby-21889",
+          "name": "日灵们的留影",
+          "type": "side"
+        },
+        {
+          "id": "lyby-21890",
+          "name": "最终杰作",
+          "type": "side"
+        },
+        {
+          "id": "lyby-21821",
+          "name": "飞讯内线",
+          "type": "side"
+        },
+        {
+          "id": "lyby-21823",
+          "name": "路网危情（上）",
+          "type": "side"
+        },
+        {
+          "id": "lyby-21822",
+          "name": "路网危情（下）",
+          "type": "side"
+        },
+        {
+          "id": "lyby-21824",
+          "name": "最了不起的机兵",
+          "type": "side"
+        },
+        {
+          "id": "lyby-21826",
+          "name": "星海如故（一）",
+          "type": "side"
+        },
+        {
+          "id": "lyby-21825",
+          "name": "星海如故（二）",
+          "type": "side"
+        },
+        {
+          "id": "lyby-21827",
+          "name": "遗愿清单",
+          "type": "side"
+        },
+        {
+          "id": "lyby-21828",
+          "name": "十六亿比特",
+          "type": "side"
+        },
+        {
+          "id": "lyby-24520",
+          "name": "凛冬的希望",
+          "type": "expl"
+        },
+        {
+          "id": "lyby-24521",
+          "name": "冰与铁之歌",
+          "type": "expl"
+        }
+      ]
+    },
+    {
+      "id": "yzc",
+      "name": "夜之城",
+      "chapter": "3.4 拉海洛",
+      "order": 160,
+      "quests": [
+        {
+          "id": "yzc-22149",
+          "name": "边缘幻梦",
+          "type": "main"
+        }
+      ]
+    },
+    {
+      "id": "mz",
+      "name": "梦州",
+      "chapter": "3.5 梦州",
+      "order": 170,
+      "quests": [
+        {
+          "id": "mz-24601",
+          "name": "予以明日的花束",
+          "type": "main"
+        },
+        {
+          "id": "mz-24197",
+          "name": "梦枢心相由心生",
+          "type": "main"
+        },
+        {
+          "id": "mz-23539",
+          "name": "幽客销残声",
+          "type": "main"
+        },
+        {
+          "id": "mz-23540",
+          "name": "烟云幽远心剑鸣",
+          "type": "main"
+        },
+        {
+          "id": "mz-22838",
+          "name": "灵籁之契冥相因",
+          "type": "main"
+        },
+        {
+          "id": "mz-22839",
+          "name": "玄翎振壑定澜音",
+          "type": "main"
+        },
+        {
+          "id": "mz-22840",
+          "name": "山雨欲来风满楼",
+          "type": "main"
+        },
+        {
+          "id": "mz-23630",
+          "name": "终极难题",
+          "type": "side"
+        },
+        {
+          "id": "mz-23631",
+          "name": "暗黑决斗传说·上",
+          "type": "side"
+        },
+        {
+          "id": "mz-23632",
+          "name": "暗黑决斗传说·中",
+          "type": "side"
+        },
+        {
+          "id": "mz-23633",
+          "name": "暗黑决斗传说·下",
+          "type": "side"
+        },
+        {
+          "id": "mz-23634",
+          "name": "“嘻嘻”不嘻嘻",
+          "type": "side"
+        },
+        {
+          "id": "mz-23635",
+          "name": "欢迎来到同好会",
+          "type": "side"
+        },
+        {
+          "id": "mz-23636",
+          "name": "最后的回声（一）",
+          "type": "side"
+        },
+        {
+          "id": "mz-23637",
+          "name": "最后的回声（二）",
+          "type": "side"
+        },
+        {
+          "id": "mz-23638",
+          "name": "药品补给",
+          "type": "side"
+        },
+        {
+          "id": "mz-23639",
+          "name": "不只是装饰而已",
+          "type": "side"
+        },
+        {
+          "id": "mz-23640",
+          "name": "捕影捉风",
+          "type": "side"
+        },
+        {
+          "id": "mz-23641",
+          "name": "思念之声",
+          "type": "side"
+        },
+        {
+          "id": "mz-23642",
+          "name": "故乡温情",
+          "type": "side"
+        },
+        {
+          "id": "mz-23643",
+          "name": "藏起来的童年",
+          "type": "side"
+        },
+        {
+          "id": "mz-23644",
+          "name": "醒悟",
+          "type": "side"
+        },
+        {
+          "id": "mz-23645",
+          "name": "秘密",
+          "type": "side"
+        },
+        {
+          "id": "mz-23646",
+          "name": "星星闪烁的夜晚",
+          "type": "side"
+        },
+        {
+          "id": "mz-23647",
+          "name": "虚质磁暴协助作战",
+          "type": "side"
+        },
+        {
+          "id": "mz-23648",
+          "name": "回归于光",
+          "type": "side"
+        },
+        {
+          "id": "mz-23649",
+          "name": "平原的脉络",
+          "type": "side"
+        }
+      ]
+    },
+    {
+      "id": "bx",
+      "name": "伴星任务",
+      "chapter": "角色专属",
+      "order": 180,
+      "quests": [
+        {
+          "id": "bx-16882",
+          "name": "夜行的焰光",
+          "type": "comp"
+        },
+        {
+          "id": "bx-16449",
+          "name": "幽夜幻梦",
+          "type": "comp"
+        },
+        {
+          "id": "bx-16450",
+          "name": "启航日，船长！",
+          "type": "comp"
+        },
+        {
+          "id": "bx-16443",
+          "name": "今夜星光灿烂",
+          "type": "comp"
+        },
+        {
+          "id": "bx-16444",
+          "name": "如果在雨夜，一个家族",
+          "type": "comp"
+        },
+        {
+          "id": "bx-16445",
+          "name": "离火弈长生",
+          "type": "comp"
+        },
+        {
+          "id": "bx-16446",
+          "name": "自问丹青",
+          "type": "comp"
+        },
+        {
+          "id": "bx-16447",
+          "name": "小径分岔的星海",
+          "type": "comp"
+        },
+        {
+          "id": "bx-16448",
+          "name": "此际我独行",
+          "type": "comp"
+        },
+        {
+          "id": "bx-15316",
+          "name": "小小羊咩大冒险",
+          "type": "comp"
+        },
+        {
+          "id": "bx-12065",
+          "name": "啸野归城",
+          "type": "comp"
+        },
+        {
+          "id": "bx-12066",
+          "name": "长夜将明",
+          "type": "comp"
+        }
       ]
     }
   ]
