@@ -284,6 +284,18 @@ namespace WuwaChecklist
             _panel.InvalidateVisual();
         }
 
+        /// <summary>退出搜索，回到按版本看的那一屏。× / Esc / 菜单都走这儿，别各写一份。</summary>
+        public void ClearSearch()
+        {
+            if (string.IsNullOrEmpty((Store.Settings.SearchText ?? "").Trim())) return;
+            Store.Settings.SearchText = "";
+            // 搜出来的第一条可能不属于当前版本，清掉免得右列明明回区域了还指着别人
+            var list = CurrentShown();
+            if (SelectedQuest != null && !list.Contains(SelectedQuest)) SelectedQuest = null;
+            SaveSoon();
+            _panel.InvalidateVisual();
+        }
+
         private void OnLocationChanged(object sender, EventArgs e)
         {
             if (_dragging) return;
@@ -680,6 +692,18 @@ namespace WuwaChecklist
             var m = new DarkMenu();
             m.AddHeader("显示");
 
+            // 搜索开着头一个就是退出口，免得他翻遍菜单也找不到怎么回去
+            if (!string.IsNullOrEmpty((Store.Settings.SearchText ?? "").Trim()))
+            {
+                m.AddItem("退出搜索（" + Store.Settings.SearchText.Trim() + "）", ClearSearch);
+                m.AddSeparator();
+            }
+            else
+            {
+                m.AddItem("搜索任务名…", BeginSearch);
+                m.AddSeparator();
+            }
+
             string pct = Math.Round(Store.Settings.Opacity * 100) + "%";
             m.AddSlider("透明度", 0.30, 1.00, Store.Settings.Opacity, v =>
             {
@@ -1029,7 +1053,13 @@ namespace WuwaChecklist
             // 窗口上的本地快捷键，只在窗口有焦点时生效
             if (e.Key == Key.Escape)
             {
-                if (_noteBox != null) { EndNoteEdit(false); e.Handled = true; }
+                if (_noteBox != null) { EndNoteEdit(false); e.Handled = true; return; }
+                // 搜索开着的时候 Esc 就是退出搜索，别逼他去找那颗小 ×
+                if (!string.IsNullOrEmpty((Store.Settings.SearchText ?? "").Trim()))
+                {
+                    ClearSearch();
+                    e.Handled = true;
+                }
                 return;
             }
             if (e.Key == Key.Space && SelectedQuest != null && _noteBox == null)

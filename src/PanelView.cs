@@ -198,11 +198,13 @@ namespace WuwaChecklist
         private void DrawSearchPill(DrawingContext dc, double op, double x0, double x1)
         {
             double w = x1 - x0;
-            if (w < 52) return;
+            if (w < 26) return;             // 真挤不下了，连图标都摊不开
 
             var st = _host.Store.Settings;
             string q = st.SearchText ?? "";
             bool on = q.Trim().Length > 0;
+            // 窄的时候只留放大镜和 ×，不写字——字挤成一条看不清，还占着地方
+            bool compact = w < 64;
 
             double btnH = 22;
             double y = (Theme.HeaderH - btnH) / 2;
@@ -213,19 +215,29 @@ namespace WuwaChecklist
                 RRect(rect, 11, 11, 11, 11));
             if (rect.Contains(_hover)) dc.DrawGeometry(null, new Pen(Theme.BrAccDim, 1), RRect(rect, 11, 11, 11, 11));
 
-            // 放大镜：一个圈加一根柄，别指望字体里那个
-            var mc = new Point(x0 + 12, y + btnH / 2);
-            dc.DrawEllipse(null, new Pen(on ? Theme.BrAcc : Theme.BrDim, 1.2), mc, 4, 4);
-            dc.DrawLine(new Pen(on ? Theme.BrAcc : Theme.BrDim, 1.2),
-                new Point(mc.X + 3, mc.Y + 3), new Point(mc.X + 6, mc.Y + 6));
+            // 放大镜：一个圈加一根柄，别指望字体里那个。
+            // 挤到只剩二十几像素的时候它跟 × 会压在一块儿，这时候让位给 ×
+            if (!compact || !on)
+            {
+                var mc = new Point(compact ? x0 + w / 2 : x0 + 12, y + btnH / 2);
+                dc.DrawEllipse(null, new Pen(on ? Theme.BrAcc : Theme.BrDim, 1.2), mc, 4, 4);
+                dc.DrawLine(new Pen(on ? Theme.BrAcc : Theme.BrDim, 1.2),
+                    new Point(mc.X + 3, mc.Y + 3), new Point(mc.X + 6, mc.Y + 6));
+            }
 
             double clearW = on ? 16 : 0;
             double tx = x0 + 21;
             double tw = w - 21 - 8 - clearW;
-            var txt = on
-                ? Text(q, 10.5, Theme.BrTxt, false, tw)
-                : Text("搜索任务名", 10.5, Theme.BrSub, false, tw);
-            dc.DrawText(txt, new Point(tx, y + (btnH - txt.Height) / 2));
+            if (!compact && tw > 12)
+            {
+                var txt = on
+                    ? Text(q, 10.5, Theme.BrTxt, false, tw)
+                    : Text("搜索任务名", 10.5, Theme.BrSub, false, tw);
+                dc.DrawText(txt, new Point(tx, y + (btnH - txt.Height) / 2));
+            }
+
+            // 整块先登记，× 后登记——HitAt 是倒着找的，后登记的先命中
+            _hits.Add(new Hit { R = new Rect(rect.X, rect.Y, rect.Width - clearW, rect.Height), Kind = "search" });
 
             if (on)
             {
@@ -236,9 +248,6 @@ namespace WuwaChecklist
                 dc.DrawLine(pen, new Point(cc.X - 3, cc.Y + 3), new Point(cc.X + 3, cc.Y - 3));
                 _hits.Add(new Hit { R = cr, Kind = "searchclear" });
             }
-
-            // 整块都能点（× 的那一小块后登记，会先命中它）
-            _hits.Add(new Hit { R = new Rect(rect.X, rect.Y, rect.Width - clearW, rect.Height), Kind = "search" });
         }
 
         private void DrawLeft(DrawingContext dc, double op, double bottom)
@@ -490,12 +499,14 @@ namespace WuwaChecklist
             }
 
             // 标题行：区域名 + 计数，或者「搜索结果 N 条」
+            double headRight;
             if (searching)
             {
                 var ht = Text("搜索结果", 15, Theme.BrTxt, true);
                 dc.DrawText(ht, new Point(left + 14, Theme.HeaderH + 10));
                 var hc = Text(shown.Count + " 条", 11, Theme.BrAcc);
                 dc.DrawText(hc, new Point(left + 14 + ht.Width + 10, Theme.HeaderH + 14));
+                headRight = left + 14 + ht.Width + 10 + hc.Width;
             }
             else
             {
@@ -505,18 +516,23 @@ namespace WuwaChecklist
                 dc.DrawText(rt, new Point(left + 14, Theme.HeaderH + 10));
                 var rc = Text(done + " / " + total, 11, Theme.BrAcc);
                 dc.DrawText(rc, new Point(left + 14 + rt.Width + 10, Theme.HeaderH + 14));
+                headRight = left + 14 + rt.Width + 10 + rc.Width;
             }
 
-            // 只看未完成
-            var cbRect = new Rect(w - 14 - 86, Theme.HeaderH + 12, 12, 12);
-            dc.DrawGeometry(null, new Pen(st.FilterIncomplete ? Theme.BrAcc : Theme.Scaled(Theme.Border, op), 1), RRect(cbRect, 2, 2, 2, 2));
-            if (st.FilterIncomplete)
+            // 只看未完成：窗口拉到最窄的时候这里会跟标题叠上，叠上就不画了，
+            // 反正这个开关在 ⋯ 菜单里也有
+            if (w - 14 - 86 - 8 > headRight)
             {
-                dc.DrawGeometry(null, new Pen(Theme.BrAcc, 1.4), CheckPath(cbRect));
+                var cbRect = new Rect(w - 14 - 86, Theme.HeaderH + 12, 12, 12);
+                dc.DrawGeometry(null, new Pen(st.FilterIncomplete ? Theme.BrAcc : Theme.Scaled(Theme.Border, op), 1), RRect(cbRect, 2, 2, 2, 2));
+                if (st.FilterIncomplete)
+                {
+                    dc.DrawGeometry(null, new Pen(Theme.BrAcc, 1.4), CheckPath(cbRect));
+                }
+                var cbl = Text("只看未完成", 10.5, st.FilterIncomplete ? Theme.BrTxt : Theme.BrSub);
+                dc.DrawText(cbl, new Point(cbRect.Right + 5, cbRect.Top - 1));
+                _hits.Add(new Hit { R = new Rect(cbRect.X - 4, cbRect.Y - 4, 90, 20), Kind = "filter" });
             }
-            var cbl = Text("只看未完成", 10.5, st.FilterIncomplete ? Theme.BrTxt : Theme.BrSub);
-            dc.DrawText(cbl, new Point(cbRect.Right + 5, cbRect.Top - 1));
-            _hits.Add(new Hit { R = new Rect(cbRect.X - 4, cbRect.Y - 4, 90, 20), Kind = "filter" });
 
             dc.DrawLine(new Pen(Theme.Scaled(Theme.Line, op), 1),
                 new Point(left, Theme.HeaderH + Theme.TitleH - 4.5),
@@ -915,9 +931,7 @@ namespace WuwaChecklist
                         _host.BeginSearch();
                         break;
                     case "searchclear":
-                        _host.Store.Settings.SearchText = "";
-                        _host.SaveSoon();
-                        InvalidateVisual();
+                        _host.ClearSearch();
                         break;
                     case "filter":
                         _host.Store.Settings.FilterIncomplete = !_host.Store.Settings.FilterIncomplete;
