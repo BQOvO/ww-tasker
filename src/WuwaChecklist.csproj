@@ -9,9 +9,9 @@
     <AssemblyName>WuwaChecklist</AssemblyName>
     <RootNamespace>WuwaChecklist</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <Version>0.2.0</Version>
-    <FileVersion>0.2.0.0</FileVersion>
-    <AssemblyVersion>0.2.0.0</AssemblyVersion>
+    <Version>0.3.0</Version>
+    <FileVersion>0.3.0.0</FileVersion>
+    <AssemblyVersion>0.3.0.0</AssemblyVersion>
     <Company>BQOvO</Company>
     <Product>ww-tasker</Product>
     <Copyright>MIT</Copyright>

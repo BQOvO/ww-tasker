@@ -156,6 +156,12 @@ namespace WuwaChecklist
         public bool Folded = false;
         public bool FilterIncomplete = false;
         public string LastRegion = "";
+
+        /// <summary>当前展开的章节（左列按版本折叠，一次只开一章）。</summary>
+        public string OpenChapter = "";
+        /// <summary>右列的类型分页签："" = 全部。</summary>
+        public string TypeFilter = "";
+
         public int WinX = int.MinValue;
         public int WinY = int.MinValue;
         public int WinW = 392;
@@ -174,6 +180,8 @@ namespace WuwaChecklist
             d["folded"] = Folded;
             d["filterIncomplete"] = FilterIncomplete;
             if (!string.IsNullOrEmpty(LastRegion)) d["lastRegion"] = LastRegion;
+            if (!string.IsNullOrEmpty(OpenChapter)) d["openChapter"] = OpenChapter;
+            if (!string.IsNullOrEmpty(TypeFilter)) d["typeFilter"] = TypeFilter;
             if (WinX != int.MinValue) d["winX"] = WinX;
             if (WinY != int.MinValue) d["winY"] = WinY;
             d["winW"] = WinW;
@@ -194,6 +202,8 @@ namespace WuwaChecklist
             s.Folded = Json.Bool(d, "folded", false);
             s.FilterIncomplete = Json.Bool(d, "filterIncomplete", false);
             s.LastRegion = Json.Str(d, "lastRegion", "");
+            s.OpenChapter = Json.Str(d, "openChapter", "");
+            s.TypeFilter = Json.Str(d, "typeFilter", "");
             s.WinX = Json.Int(d, "winX", int.MinValue);
             s.WinY = Json.Int(d, "winY", int.MinValue);
             s.WinW = Json.Int(d, "winW", 392);

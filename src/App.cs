@@ -6,7 +6,7 @@ namespace WuwaChecklist
 {
     internal sealed class App : Application
     {
-        public const string Version = "0.2.0";
+        public const string Version = "0.3.0";
 
         private MainWindow _mw;
         private System.Threading.Mutex _mutex;

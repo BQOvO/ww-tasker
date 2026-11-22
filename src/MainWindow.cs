@@ -154,6 +154,66 @@ namespace WuwaChecklist
             get { return Db.FindRegion(Store.Settings.LastRegion); }
         }
 
+        /// <summary>左列当前展开的章节。一次只开一章；"-" 表示全收起。</summary>
+        public string OpenChapter
+        {
+            get
+            {
+                string ch = Store.Settings.OpenChapter;
+                if (ch == AllFolded) return "";
+                if (!string.IsNullOrEmpty(ch) && ChapterOf(ch) != null) return ch;
+                var r = CurrentRegion;
+                if (r != null) return string.IsNullOrEmpty(r.Chapter) ? "其他" : r.Chapter;
+                return "";
+            }
+        }
+
+        /// <summary>章节全收起时存进设置里的标记（空串留给「还没设过」）。</summary>
+        private const string AllFolded = "-";
+
+        /// <summary>点章节头：已经开着的收起来，别的就换成它。</summary>
+        public void ToggleChapter(string chapter)
+        {
+            string prev = OpenChapter;
+
+            if (string.Equals(prev, chapter, StringComparison.Ordinal))
+            {
+                Store.Settings.OpenChapter = AllFolded;
+                SaveSoon();
+                Invalidate();
+                return;
+            }
+
+            Store.Settings.OpenChapter = chapter;
+
+            // 展开的这一章跟当前选中的区域不是同一章时，把选中挪到那章第一个
+            var r = CurrentRegion;
+            string cur = r == null ? "" : (string.IsNullOrEmpty(r.Chapter) ? "其他" : r.Chapter);
+            if (!string.Equals(cur, chapter, StringComparison.Ordinal))
+            {
+                var first = ChapterOf(chapter);
+                if (first != null) { Store.Settings.LastRegion = first.Id; SelectedQuest = null; }
+            }
+            SaveSoon();
+            Invalidate();
+        }
+
+        private void Invalidate()
+        {
+            _panel.InvalidateVisual();
+            _stripe.InvalidateVisual();
+        }
+
+        private Region ChapterOf(string chapter)
+        {
+            foreach (var r in Db.Regions)
+            {
+                string c = string.IsNullOrEmpty(r.Chapter) ? "其他" : r.Chapter;
+                if (string.Equals(c, chapter, StringComparison.Ordinal)) return r;
+            }
+            return null;
+        }
+
         public int StateOf(Quest q)
         {
             return Store.Active.Get(q.Id);
@@ -175,6 +235,14 @@ namespace WuwaChecklist
         public void SelectRegion(string id)
         {
             Store.Settings.LastRegion = id;
+            // 切到别的章节时，把那一章展开——否则点进去的位置会被收起来
+            var r = Db.FindRegion(id);
+            if (r != null)
+            {
+                string ch = string.IsNullOrEmpty(r.Chapter) ? "其他" : r.Chapter;
+                if (!string.Equals(Store.Settings.OpenChapter, ch, StringComparison.Ordinal))
+                    Store.Settings.OpenChapter = ch;
+            }
             SelectedQuest = null;
             SaveSoon();
         }
@@ -797,13 +865,25 @@ namespace WuwaChecklist
             }
         }
 
-        private List<Quest> CurrentShown()
+        public List<Quest> CurrentShown()
         {
             var r = CurrentRegion;
             var list = new List<Quest>();
             if (r == null) return list;
+
+            string tf = Store.Settings.TypeFilter;
+            bool byType = !string.IsNullOrEmpty(tf);
+            if (byType)
+            {
+                bool any = false;
+                foreach (var q in r.Quests) if (string.Equals(q.Type, tf, StringComparison.Ordinal)) { any = true; break; }
+                // 这个区域里没有这一类的任务（比如切到只有潮汐的地区），就别把人筛空了
+                if (!any) byType = false;
+            }
+
             foreach (var q in r.Quests)
             {
+                if (byType && !string.Equals(q.Type, tf, StringComparison.Ordinal)) continue;
                 if (Store.Settings.FilterIncomplete && StateOf(q) == QuestState.Done) continue;
                 list.Add(q);
             }

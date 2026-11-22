@@ -41,9 +41,22 @@ namespace WuwaChecklist
         private double _regionScroll;
 
         // ---------------- 布局常量 ----------------
-        private const double ListTop = Theme.HeaderH + Theme.TitleH;   // 78
+        private const double TabsH = 30;
         private const double RowBaseH = 44;
         private const double RowNoteExtra = 16;
+        private const double ChapterH = 26;
+
+        /// <summary>右列任务列表的起点。只有一种类型时不留分页签的位置。</summary>
+        private double _listTop = Theme.HeaderH + Theme.TitleH + TabsH;
+
+        /// <summary>左列的一行：章节头，或者章节里的一个地区。</summary>
+        private sealed class LeftRow
+        {
+            public string Kind;        // "chapter" / "region"
+            public string Chapter;
+            public Region Region;
+            public double H;
+        }
 
         // ---------------- 绘制 ----------------
 
@@ -147,7 +160,12 @@ namespace WuwaChecklist
             // 窗口拉太矮的时候区域列表会压到「全部」那块上，裁掉多出来的
             double viewH = Math.Max(0, rowsBottom - rowsTop);
             RegionViewportHeight = viewH;
-            RegionContentHeight = _host.Db.Regions.Count * Theme.RegionRowH;
+
+            var rows = BuildLeftRows();
+            double contentH = 0;
+            foreach (var x in rows) contentH += x.H;
+            RegionContentHeight = contentH;
+
             double maxScroll = Math.Max(0, RegionContentHeight - viewH);
             if (_regionScroll > maxScroll) _regionScroll = maxScroll;
             if (_regionScroll < 0) _regionScroll = 0;
@@ -155,47 +173,12 @@ namespace WuwaChecklist
             dc.PushClip(new RectangleGeometry(new Rect(0, rowsTop, w, viewH)));
 
             var region = _host.CurrentRegion;
-            int i = 0;
-            foreach (var r in _host.Db.Regions)
+            double y0 = rowsTop - _regionScroll;
+            foreach (var row in rows)
             {
-                double y0 = rowsTop + i * Theme.RegionRowH - _regionScroll;
-                i++;
-                var rect = new Rect(0, y0, w, Theme.RegionRowH);
-                bool sel = region != null && r.Id == region.Id;
-
-                if (sel)
-                {
-                    dc.DrawRectangle(Theme.Scaled(Theme.SelBg, op), null, new Rect(0, y0, w, Theme.RegionRowH));
-                    dc.DrawRectangle(Theme.BrAcc, null, new Rect(0, y0, 2, Theme.RegionRowH));
-                }
-                else if (rect.Contains(_hover))
-                {
-                    dc.DrawRectangle(Theme.Scaled(Theme.SelBg, op * 0.5), null, new Rect(0, y0, w, Theme.RegionRowH));
-                }
-
-                int done, total;
-                _host.CountRegion(r, out done, out total);
-
-                var nm = TextFit(r.Name, new[] { 12.5, 11.5, 10.5, 9.5 },
-                    sel ? Theme.BrTxt : Theme.BrRTxt, sel, w - 16 - 46);
-                dc.DrawText(nm, new Point(16, y0 + 6 + Math.Max(0, (22 - nm.Height) / 2)));
-
-                var cnt = Text(done + "/" + total, 10.5, sel ? Theme.BrAcc : Theme.BrSub);
-                dc.DrawText(cnt, new Point(w - 12 - cnt.Width, y0 + 10));
-
-                // 2px 进度条
-                double bx = 16, by = y0 + 31, bw = w - 16 - 14;
-                dc.DrawRectangle(Theme.Scaled(Theme.BarBg, op), null, new Rect(bx, by, bw, 2));
-                double frac = total <= 0 ? 0 : (double)done / total;
-                if (frac > 0) dc.DrawRectangle(Theme.BrAcc, null, new Rect(bx, by, Math.Max(1, bw * frac), 2));
-
-                dc.DrawLine(new Pen(Theme.Scaled(Theme.RowLine, op), 1),
-                    new Point(0, y0 + Theme.RegionRowH - 0.5), new Point(w - 1, y0 + Theme.RegionRowH - 0.5));
-
-                // 只把看得见的那部分登记成可点区域，别让裁掉的空白处还能点
-                var visible = Rect.Intersect(rect, new Rect(0, rowsTop, w, viewH));
-                if (!visible.IsEmpty && visible.Height > 2)
-                    _hits.Add(new Hit { R = visible, Kind = "region", Arg = r.Id });
+                if (row.Kind == "chapter") DrawChapterRow(dc, op, w, row, y0, rowsTop, viewH);
+                else DrawRegionRow(dc, op, w, row, y0, region, rowsTop, viewH);
+                y0 += row.H;
             }
 
             dc.Pop();
@@ -233,6 +216,109 @@ namespace WuwaChecklist
             dc.DrawText(a3, new Point(16, ty + 7));
         }
 
+        /// <summary>
+        /// 左列的行：章节头 + 该章节的地区。展开的那一章才列地区，其余只留一行标题。
+        /// 一次只开一章——这是他自己选的「按版本折叠，只展开当前章节」。
+        /// </summary>
+        private List<LeftRow> BuildLeftRows()
+        {
+            var rows = new List<LeftRow>();
+            string open = _host.OpenChapter;
+
+            // 按章节首次出现的顺序分组（Regions 已经按 order 排过）
+            var order = new List<string>();
+            var map = new Dictionary<string, List<Region>>(StringComparer.Ordinal);
+            foreach (var r in _host.Db.Regions)
+            {
+                string ch = string.IsNullOrEmpty(r.Chapter) ? "其他" : r.Chapter;
+                if (!map.ContainsKey(ch))
+                {
+                    map[ch] = new List<Region>();
+                    order.Add(ch);
+                }
+                map[ch].Add(r);
+            }
+
+            foreach (var ch in order)
+            {
+                bool openThis = string.Equals(ch, open, StringComparison.Ordinal);
+                rows.Add(new LeftRow { Kind = "chapter", Chapter = ch, H = ChapterH });
+
+                if (!openThis) continue;
+                foreach (var r in map[ch])
+                    rows.Add(new LeftRow { Kind = "region", Chapter = ch, Region = r, H = Theme.RegionRowH });
+            }
+            return rows;
+        }
+
+        private void DrawChapterRow(DrawingContext dc, double op, double w, LeftRow row, double y0, double rowsTop, double viewH)
+        {
+            bool open = string.Equals(row.Chapter, _host.OpenChapter, StringComparison.Ordinal);
+            var rect = new Rect(0, y0, w, row.H);
+            bool hov = !_host.Locked && rect.Contains(_hover);
+
+            if (hov) dc.DrawRectangle(Theme.Scaled(Theme.SelBg, op * 0.45), null, rect);
+
+            // 展开的小三角朝下，收起朝右——全手绘，雅黑里的 ▸ 会变空心方块
+            var c = new Point(13, y0 + row.H / 2);
+            if (open) DrawChevronDown(dc, c, Theme.BrAcc);
+            else DrawChevronRight(dc, c, Theme.BrSub);
+
+            // 章节名会挤，用 TextFit 从 10.5 一路缩到 8.5
+            var nm = TextFit(row.Chapter, new[] { 10.5, 9.5, 8.5 },
+                open ? Theme.BrAcc : Theme.BrSub, open, w - 26 - 8);
+            dc.DrawText(nm, new Point(24, y0 + (row.H - nm.Height) / 2));
+
+            dc.DrawLine(new Pen(Theme.Scaled(Theme.RowLine, op * 0.7), 1),
+                new Point(10, y0 + row.H - 0.5), new Point(w - 8, y0 + row.H - 0.5));
+
+            var visible = Rect.Intersect(rect, new Rect(0, rowsTop, w, viewH));
+            if (!visible.IsEmpty && visible.Height > 2)
+                _hits.Add(new Hit { R = visible, Kind = "chapter", Arg = row.Chapter });
+        }
+
+        private void DrawRegionRow(DrawingContext dc, double op, double w, LeftRow row, double y0, Region current, double rowsTop, double viewH)
+        {
+            var r = row.Region;
+            var rect = new Rect(0, y0, w, row.H);
+            bool sel = current != null && r.Id == current.Id;
+
+            if (sel)
+            {
+                dc.DrawRectangle(Theme.Scaled(Theme.SelBg, op), null, new Rect(0, y0, w, row.H));
+                dc.DrawRectangle(Theme.BrAcc, null, new Rect(0, y0, 2, row.H));
+            }
+            else if (rect.Contains(_hover))
+            {
+                dc.DrawRectangle(Theme.Scaled(Theme.SelBg, op * 0.5), null, new Rect(0, y0, w, row.H));
+            }
+
+            int done, total;
+            _host.CountRegion(r, out done, out total);
+
+            // 缩进一格，视觉上挂在章节下面
+            var nm = TextFit(r.Name, new[] { 12.5, 11.5, 10.5, 9.5 },
+                sel ? Theme.BrTxt : Theme.BrRTxt, sel, w - 26 - 42);
+            dc.DrawText(nm, new Point(26, y0 + 6 + Math.Max(0, (22 - nm.Height) / 2)));
+
+            var cnt = Text(done + "/" + total, 10.5, sel ? Theme.BrAcc : Theme.BrSub);
+            dc.DrawText(cnt, new Point(w - 12 - cnt.Width, y0 + 10));
+
+            // 2px 进度条
+            double bx = 26, by = y0 + 31, bw = w - 26 - 14;
+            dc.DrawRectangle(Theme.Scaled(Theme.BarBg, op), null, new Rect(bx, by, bw, 2));
+            double frac = total <= 0 ? 0 : (double)done / total;
+            if (frac > 0) dc.DrawRectangle(Theme.BrAcc, null, new Rect(bx, by, Math.Max(1, bw * frac), 2));
+
+            dc.DrawLine(new Pen(Theme.Scaled(Theme.RowLine, op), 1),
+                new Point(0, y0 + row.H - 0.5), new Point(w - 1, y0 + row.H - 0.5));
+
+            // 只把看得见的那部分登记成可点区域，别让裁掉的空白处还能点
+            var visible = Rect.Intersect(rect, new Rect(0, rowsTop, w, viewH));
+            if (!visible.IsEmpty && visible.Height > 2)
+                _hits.Add(new Hit { R = visible, Kind = "region", Arg = r.Id });
+        }
+
         private void DrawRight(DrawingContext dc, double w, double op, double footerTop)
         {
             double left = Theme.LeftW + 1;
@@ -242,7 +328,7 @@ namespace WuwaChecklist
             if (region == null)
             {
                 var e = Text("没有区域", 12, Theme.BrDim);
-                dc.DrawText(e, new Point(left + 14, ListTop + 14));
+                dc.DrawText(e, new Point(left + 14, _listTop + 14));
                 return;
             }
 
@@ -271,16 +357,13 @@ namespace WuwaChecklist
                 new Point(left, Theme.HeaderH + Theme.TitleH - 4.5),
                 new Point(w - 1, Theme.HeaderH + Theme.TitleH - 4.5));
 
-            // 任务列表
-            double listH = footerTop - ListTop;
-            ViewportHeight = listH;
+            // 类型分页签
+            var shown = BuildShown();
+            DrawTabs(dc, op, left, cw, w, region, shown);
 
-            var shown = new List<Quest>();
-            foreach (var q in region.Quests)
-            {
-                if (st.FilterIncomplete && _host.StateOf(q) == QuestState.Done) continue;
-                shown.Add(q);
-            }
+            // 任务列表
+            double listH = footerTop - _listTop;
+            ViewportHeight = listH;
 
             double content = 0;
             foreach (var q in shown)
@@ -294,19 +377,19 @@ namespace WuwaChecklist
             if (_questScroll > maxScroll) _questScroll = maxScroll;
             if (_questScroll < 0) _questScroll = 0;
 
-            dc.PushClip(new RectangleGeometry(new Rect(left, ListTop, cw, listH)));
-            double y = ListTop - _questScroll;
+            dc.PushClip(new RectangleGeometry(new Rect(left, _listTop, cw, listH)));
+            double y = _listTop - _questScroll;
 
             if (shown.Count == 0)
             {
-                var none = Text(st.FilterIncomplete ? "这个区域都做完了" : "这个区域还没有任务", 11.5, Theme.BrDim);
-                dc.DrawText(none, new Point(left + 16, ListTop + 12));
+                var none = Text(st.FilterIncomplete ? "这个筛法下都做完了" : "这一栏还没有任务", 11.5, Theme.BrDim);
+                dc.DrawText(none, new Point(left + 16, _listTop + 12));
             }
 
             foreach (var q in shown)
             {
                 double rh = RowBaseH + (HasNoteLine(q) ? RowNoteExtra : 0);
-                if (y + rh >= ListTop - 2 && y <= footerTop + 2)
+                if (y + rh >= _listTop - 2 && y <= footerTop + 2)
                     DrawQuestRow(dc, q, left, y, cw, rh, op);
                 y += rh;
             }
@@ -317,7 +400,7 @@ namespace WuwaChecklist
             {
                 double trackH = listH - 4;
                 double thumbH = Math.Max(20, trackH * (listH / content));
-                double thumbY = ListTop + 2 + (trackH - thumbH) * (_questScroll / maxScroll);
+                double thumbY = _listTop + 2 + (trackH - thumbH) * (_questScroll / maxScroll);
                 dc.DrawRectangle(Theme.Scaled(Theme.BarBg, op * 0.8), null, new Rect(w - 5, thumbY, 2.5, thumbH));
             }
         }
@@ -325,6 +408,74 @@ namespace WuwaChecklist
         private bool HasNoteLine(Quest q)
         {
             return !string.IsNullOrEmpty(q.Note) || q.Hidden;
+        }
+
+        /// <summary>当前区域里实际出现过的类型，按类型表的顺序。</summary>
+        private List<string> TypesIn(Region region)
+        {
+            var order = new[] { QuestType.Main, QuestType.Comp, QuestType.Tale,
+                                QuestType.Side, QuestType.Expl, QuestType.Hidden };
+            var have = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var q in region.Quests) have.Add(q.Type);
+
+            var list = new List<string>();
+            foreach (var t in order) if (have.Contains(t)) list.Add(t);
+            foreach (var t in have) if (!list.Contains(t)) list.Add(t);
+            return list;
+        }
+
+        /// <summary>当前该显示哪些任务：类型分页签 + 只看未完成，两个一起过。</summary>
+        private List<Quest> BuildShown()
+        {
+            return _host.CurrentShown();
+        }
+
+        private void DrawTabs(DrawingContext dc, double op, double left, double cw, double w, Region region, List<Quest> shown)
+        {
+            var types = TypesIn(region);
+            if (types.Count <= 1)
+            {
+                _listTop = Theme.HeaderH + Theme.TitleH;
+                return;
+            }
+            _listTop = Theme.HeaderH + Theme.TitleH + TabsH;
+
+            string cur = _host.Store.Settings.TypeFilter;
+            if (!string.IsNullOrEmpty(cur) && !types.Contains(cur)) cur = "";
+
+            // 只有「全部」+ 实际存在的类型，别把六种全摆出来撑爆
+            var labels = new List<string> { "全部" };
+            var keys = new List<string> { "" };
+            foreach (var t in types) { labels.Add(QuestType.Label(t)); keys.Add(t); }
+
+            double tabH = 21;
+            double ty = Theme.HeaderH + Theme.TitleH + 3;
+            double x = left + 14;
+            double right = w - 12;
+
+            for (int i = 0; i < labels.Count; i++)
+            {
+                bool on = string.Equals(keys[i], cur, StringComparison.Ordinal);
+                var t = Text(labels[i], 10.5, on ? Theme.BrAcc : Theme.BrSub, on);
+                double tw = t.Width + 14;
+
+                // 挤不下就整排收窄：宁可字小一点，也别让最后一个签跑出去
+                if (x + tw > right)
+                {
+                    t = Text(labels[i], 9.5, on ? Theme.BrAcc : Theme.BrSub, on);
+                    t.MaxTextWidth = Math.Max(18, right - x - 10);
+                    t.MaxLineCount = 1;
+                    t.Trimming = TextTrimming.CharacterEllipsis;
+                    tw = Math.Max(20, t.Width + 10);
+                }
+
+                var r = new Rect(x, ty, tw, tabH);
+                if (on) dc.DrawRectangle(Theme.BrAcc, null, new Rect(x, ty + tabH - 1.5, tw, 1.5));
+                dc.DrawText(t, new Point(x + (tw - t.Width) / 2, ty + (tabH - t.Height) / 2));
+
+                _hits.Add(new Hit { R = r, Kind = "tab", Arg = keys[i] });
+                x += tw + 4;
+            }
         }
 
         private void DrawQuestRow(DrawingContext dc, Quest q, double left, double top, double cw, double rh, double op)
@@ -525,6 +676,17 @@ namespace WuwaChecklist
             {
                 switch (hit.Kind)
                 {
+                    case "chapter":
+                        _host.ToggleChapter((string)hit.Arg);
+                        _regionScroll = 0;
+                        InvalidateVisual();
+                        break;
+                    case "tab":
+                        _host.Store.Settings.TypeFilter = (string)hit.Arg;
+                        _questScroll = 0;
+                        _host.SaveSoon();
+                        InvalidateVisual();
+                        break;
                     case "region":
                         _host.SelectRegion((string)hit.Arg);
                         _questScroll = 0;
@@ -550,7 +712,8 @@ namespace WuwaChecklist
                         break;
                     case "more":
                         DeferMenu(false);
-                        break;                }
+                        break;
+                }
                 e.Handled = true;
                 return;
             }
@@ -603,7 +766,7 @@ namespace WuwaChecklist
             var region = _host.CurrentRegion;
             if (region == null) return new Rect(40, 100, 200, 18);
 
-            double y = ListTop - _questScroll;
+            double y = _listTop - _questScroll;
             foreach (var item in region.Quests)
             {
                 if (st.FilterIncomplete && _host.StateOf(item) == QuestState.Done) continue;
@@ -716,6 +879,36 @@ namespace WuwaChecklist
             }
             g.Freeze();
             dc.DrawGeometry(null, new Pen(br, 1.2), g);
+        }
+
+        /// <summary>章节展开：三角尖朝下。</summary>
+        private static void DrawChevronDown(DrawingContext dc, Point c, Brush br)
+        {
+            var pts = new[] { new Point(c.X - 3, c.Y - 1.6), new Point(c.X + 3, c.Y - 1.6), new Point(c.X, c.Y + 2.2) };
+            var g = new StreamGeometry();
+            using (var ctx = g.Open())
+            {
+                ctx.BeginFigure(pts[0], true, true);
+                ctx.LineTo(pts[1], true, false);
+                ctx.LineTo(pts[2], true, false);
+            }
+            g.Freeze();
+            dc.DrawGeometry(br, null, g);
+        }
+
+        /// <summary>章节收起：三角尖朝右。</summary>
+        private static void DrawChevronRight(DrawingContext dc, Point c, Brush br)
+        {
+            var pts = new[] { new Point(c.X - 1.6, c.Y - 3), new Point(c.X + 2.2, c.Y), new Point(c.X - 1.6, c.Y + 3) };
+            var g = new StreamGeometry();
+            using (var ctx = g.Open())
+            {
+                ctx.BeginFigure(pts[0], true, true);
+                ctx.LineTo(pts[1], true, false);
+                ctx.LineTo(pts[2], true, false);
+            }
+            g.Freeze();
+            dc.DrawGeometry(br, null, g);
         }
 
         private static void DrawDots(DrawingContext dc, Rect r, Brush br)
