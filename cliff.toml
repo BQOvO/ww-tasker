@@ -1,0 +1,56 @@
+[changelog]
+header = """
+# 更新日志\n
+鸣潮地区任务查漏补缺 —— 所有值得写下来的改动。\n
+"""
+body = """
+{% if version %}\
+## {{ version }} · {{ timestamp | date(format="%Y-%m-%d") }}
+{% else %}\
+## 未发布
+{% endif %}\
+{% for group, commits in commits | group_by(attribute="group") %}
+### {{ group }}
+{% for commit in commits %}
+- {{ commit.message | upper_first }}\
+{% if commit.body %}\
+{% for line in commit.body | split(pat="\n") %}\
+{% if line | trim | length > 0 %}\
+  {{ line | trim }}
+{% endif %}\
+{% endfor %}\
+{% endif %}\
+{% endfor %}
+{% endfor %}
+"""
+footer = """
+---
+任务库数据单独放在 `data/quests.json`，改动它不需要升版本号。
+"""
+trim = true
+
+[git]
+conventional_commits = true
+filter_unconventional = false
+split_commits = false
+commit_parsers = [
+  { message = "^feat", group = "新东西" },
+  { message = "^fix", group = "修好的" },
+  { message = "^perf", group = "快了" },
+  { message = "^refactor", group = "内部整理" },
+  { message = "^docs", group = "文档" },
+  { message = "^data", group = "任务库" },
+  { message = "^chore\\(release\\)", skip = true },
+  { message = "^chore", group = "杂活" },
+  { message = "^style", group = "杂活" },
+  { message = "^test", group = "杂活" },
+  { message = "^revert", group = "回滚" },
+]
+protect_breaking_commits = false
+filter_commits = false
+tag_pattern = "v[0-9]*"
+sort_commits = "oldest"
+
+[remote.github]
+owner = "BQOvO"
+repo = "ww-tasker"

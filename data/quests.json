@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "gameVersion": "3.0",
+  "updatedAt": "2026-11-22T14:00:00",
+  "note": "占位数据。任务名先随手填，等功能跑通了再往真名灌。id 一旦定下来就不要再改——存档只记 id。",
+  "regions": [
+    {
+      "id": "huanglong.jinzhou",
+      "name": "今州",
+      "chapter": "1.0 瑝珑",
+      "order": 10,
+      "quests": [
+        { "id": "jz.main.01", "name": "第一幕：嘤鸣初相召", "type": "main", "subArea": "今州城" },
+        { "id": "jz.main.02", "name": "第二幕：撞金止行阵", "type": "main", "subArea": "今州城" },
+        { "id": "jz.tale.01", "name": "追月节：月下之约", "type": "tale", "subArea": "今州城" },
+        { "id": "jz.side.01", "name": "消失的货运单", "type": "side", "subArea": "桃祈乡" },
+        { "id": "jz.side.02", "name": "石碑下的低语", "type": "side", "subArea": "无明海", "hidden": true, "note": "无追踪，需靠近触发" },
+        { "id": "jz.expl.01", "name": "雨夜的旅人", "type": "expl", "subArea": "今州城", "hidden": true, "note": "先做「追月节」才刷" }
+      ]
+    },
+    {
+      "id": "huanglong.beiluoye",
+      "name": "北落野",
+      "chapter": "1.0 瑝珑",
+      "order": 20,
+      "quests": [
+        { "id": "bly.main.01", "name": "第三幕：焚焰照野", "type": "main", "subArea": "焚焰海" },
+        { "id": "bly.side.01", "name": "拾荒者的账本", "type": "side", "subArea": "荒弃营地" },
+        { "id": "bly.expl.01", "name": "走失的机械犬", "type": "expl", "subArea": "锈蚀谷地", "hidden": true, "note": "无追踪" }
+      ]
+    },
+    {
+      "id": "huanglong.huanshidigao",
+      "name": "荒石高地",
+      "chapter": "1.0 瑝珑",
+      "order": 30,
+      "quests": [
+        { "id": "hsgd.main.01", "name": "幕间：旧日的回声", "type": "tale", "subArea": "云陵谷" },
+        { "id": "hsgd.side.01", "name": "采石人的执念", "type": "side", "subArea": "石场" }
+      ]
+    },
+    {
+      "id": "huanglong.wuminghai",
+      "name": "无明海",
+      "chapter": "1.1 瑝珑",
+      "order": 40,
+      "quests": [
+        { "id": "wmh.main.01", "name": "同行：潮汐的彼端", "type": "comp", "subArea": "潮音岛" },
+        { "id": "wmh.side.01", "name": "沉船的守夜人", "type": "side", "subArea": "沉船湾" },
+        { "id": "wmh.side.02", "name": "灯塔里的第七封信", "type": "side", "subArea": "白灯塔", "hidden": true, "note": "要按顺序点亮三盏灯" }
+      ]
+    },
+    {
+      "id": "huanglong.heihaian",
+      "name": "黑海岸",
+      "chapter": "1.2 黑海岸",
+      "order": 50,
+      "quests": [
+        { "id": "hha.main.01", "name": "第一幕：黑色潮汐", "type": "main", "subArea": "黑海岸" },
+        { "id": "hha.main.02", "name": "第二幕：残星之诺", "type": "main", "subArea": "残星会" },
+        { "id": "hha.side.01", "name": "废墟里的唱片", "type": "side", "subArea": "旧城区" },
+        { "id": "hha.expl.01", "name": "海雾中的低吟", "type": "expl", "hidden": true, "note": "只在下雨天出现" }
+      ]
+    },
+    {
+      "id": "rinascita.linnaxita",
+      "name": "黎那汐塔",
+      "chapter": "2.0 黎那汐塔",
+      "order": 60,
+      "quests": [
+        { "id": "lnxt.main.01", "name": "第一幕：圣城之门", "type": "main", "subArea": "拉古那" },
+        { "id": "lnxt.main.02", "name": "第二幕：荒诞的盛宴", "type": "main", "subArea": "拉古那" },
+        { "id": "lnxt.tale.01", "name": "幕间：面具之下", "type": "tale", "subArea": "格玛尼" },
+        { "id": "lnxt.side.01", "name": "面具匠人的委托", "type": "side", "subArea": "格玛尼" },
+        { "id": "lnxt.side.02", "name": "下水道的第九只猫", "type": "side", "subArea": "拉古那地下", "hidden": true, "note": "无追踪" }
+      ]
+    },
+    {
+      "id": "rinascita.luoyibingyuan",
+      "name": "罗伊冰原",
+      "chapter": "2.1 黎那汐塔",
+      "order": 70,
+      "quests": [
+        { "id": "lyby.main.01", "name": "第一幕：永冻的回声", "type": "main", "subArea": "霜痕谷" },
+        { "id": "lyby.side.01", "name": "凿冰人的女儿", "type": "side", "subArea": "营地" },
+        { "id": "lyby.side.02", "name": "冰层下的争执", "type": "side", "subArea": "裂谷", "hidden": true }
+      ]
+    },
+    {
+      "id": "rinascita.lahailuo",
+      "name": "拉海洛",
+      "chapter": "3.0 拉海洛",
+      "order": 80,
+      "quests": [
+        { "id": "lhl.main.01", "name": "第一幕：空域之上", "type": "main", "subArea": "浮空港" },
+        { "id": "lhl.side.01", "name": "浮岛的信使", "type": "side", "subArea": "浮空港" }
+      ]
+    }
+  ]
+}

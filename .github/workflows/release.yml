@@ -1,0 +1,74 @@
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: '要发版的 tag（比如 v0.1.0）'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 装 .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: 还原 + 编译
+        run: dotnet build src/WuwaChecklist.csproj -c Release
+
+      - name: 校验产物
+        shell: pwsh
+        run: |
+          $exe = 'src/bin/Release/WuwaChecklist.exe'
+          if (-not (Test-Path $exe)) { throw "没生成 exe：$exe" }
+          $len = (Get-Item $exe).Length
+          Write-Host "exe = $len bytes"
+
+      - name: 打 zip
+        shell: pwsh
+        run: |
+          $tag = '${{ github.event.inputs.tag }}'
+          if (-not $tag) { $tag = '${{ github.ref_name }}' }
+          $stage = 'stage/ww-tasker'
+          New-Item -ItemType Directory -Force -Path $stage | Out-Null
+          Copy-Item 'src/bin/Release/WuwaChecklist.exe' $stage
+          Copy-Item 'data/quests.json' $stage
+          Copy-Item 'README.md' $stage
+          Copy-Item 'LICENSE' $stage
+          Compress-Archive -Path "$stage/*" -DestinationPath "ww-tasker-$tag.zip" -Force
+          "TAG=$tag" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+
+      - name: 生成 CHANGELOG
+        shell: pwsh
+        run: |
+          $ver = '${{ github.event.inputs.tag }}'
+          if (-not $ver) { $ver = '${{ github.ref_name }}' }
+          Invoke-WebRequest -Uri 'https://github.com/orhun/git-cliff/releases/latest/download/git-cliff-x86_64-pc-windows-msvc.zip' -OutFile 'cliff.zip'
+          Expand-Archive 'cliff.zip' -DestinationPath 'cliffbin' -Force
+          $bin = Get-ChildItem -Path 'cliffbin' -Recurse -Filter 'git-cliff.exe' | Select-Object -First 1
+          & $bin.FullName --tag $ver --output CHANGELOG.md
+          if (-not (Test-Path 'CHANGELOG.md')) { '## ' + $ver | Out-File 'CHANGELOG.md' -Encoding utf8 }
+          Get-Content 'CHANGELOG.md' -TotalCount 20
+
+      - name: 发 Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.inputs.tag || github.ref_name }}
+          name: ${{ github.event.inputs.tag || github.ref_name }}
+          body_path: CHANGELOG.md
+          files: ww-tasker-${{ github.event.inputs.tag || github.ref_name }}.zip
+          draft: false
+          prerelease: false
