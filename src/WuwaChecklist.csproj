@@ -9,9 +9,10 @@
     <AssemblyName>WuwaChecklist</AssemblyName>
     <RootNamespace>WuwaChecklist</RootNamespace>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <Version>0.3.0</Version>
-    <FileVersion>0.3.0.0</FileVersion>
-    <AssemblyVersion>0.3.0.0</AssemblyVersion>
+    <ApplicationIcon>app.ico</ApplicationIcon>
+    <Version>0.4.0</Version>
+    <FileVersion>0.4.0.0</FileVersion>
+    <AssemblyVersion>0.4.0.0</AssemblyVersion>
     <Company>BQOvO</Company>
     <Product>ww-tasker</Product>
     <Copyright>MIT</Copyright>
@@ -30,6 +31,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="..\data\quests.json" LogicalName="quests.json" />
+    <Resource Include="app.ico" LogicalName="app.ico" />
   </ItemGroup>
 
 </Project>

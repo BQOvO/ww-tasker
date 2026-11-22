@@ -40,6 +40,7 @@ namespace WuwaChecklist
             ShowInTaskbar = true;
             ResizeMode = ResizeMode.NoResize;
             Title = "鸣潮 · 查漏补缺";
+            Icon = AppIcon.Load();
             Width = 392;
             Height = 632;
             SnapsToDevicePixels = true;
