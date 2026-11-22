@@ -123,6 +123,12 @@ git push origin v0.1.0
 
 `.github/workflows/release.yml` 会编译、打 zip、用 [git-cliff](https://github.com/orhun/git-cliff) 按 `cliff.toml` 生成更新日志，然后发到 Releases。
 
+压缩包名字固定是 `ww-tasker.zip`，不带版本号——想下最新版，这个链接一直有效：
+
+```
+https://github.com/BQOvO/ww-tasker/releases/latest/download/ww-tasker.zip
+```
+
 ## 工具
 
 `tools/` 下面几个脚本跟程序本体无关，是灌数据和维护用的：
