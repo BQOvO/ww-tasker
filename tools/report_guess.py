@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
-"""统计 data/quests.json 里每个区域的任务来源：主线(高置信) / 地名命中(高置信) /
-	伴星单列 / 按版本批次推(低置信)。输出一份给用户看的报告底稿。"""
+"""统计 data/quests.json 里每个区域的任务是怎么归过来的：
+	名字里带地名（高置信） / 伴星任务（高置信） / 按版本批次推（低置信）。
+	输出一份给用户看的报告底稿到 %TEMP%\\report.txt。"""
 import json, io, os, sys
-sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
-import import_wiki as W
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__))))
+import parse_bili as P  # noqa: E402
 
-path = os.path.join(os.path.dirname(__file__), '..', 'data', 'quests.json')
+path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'data', 'quests.json')
 d = json.load(io.open(path, encoding='utf-8'))
 
-hl_sub_names = list(W.HL_SUB.keys())
+SUB_NAMES = [kw for kw, _ in P.NAME_REGION]
 lines = []
 tot = 0
 low = 0
@@ -17,12 +18,9 @@ for r in d['regions']:
     lowc = []
     for q in r['quests']:
         n = q['name']
-        nn = W.norm(n)
-        if nn in W.MAIN_REGION or nn.replace('·上', '').replace('·下', '') in W.MAIN_REGION:
+        if any(s in n for s in SUB_NAMES):
             high.append(q)
         elif q['type'] == 'comp':
-            high.append(q)
-        elif any(s in n for s in hl_sub_names):
             high.append(q)
         else:
             lowc.append(q)
@@ -34,6 +32,6 @@ for r in d['regions']:
         lines.append('   推测 %d：%s' % (len(lowc), '、'.join(x['name'] for x in lowc)))
     lines.append('')
 
-lines.append('合计 %d 条，其中 %d 条地区是按「版本批次」推的（低置信）。' % (tot, low))
+lines.append('合计 %d 条，其中 %d 条只按「版本批次」推的（低置信）。' % (tot, low))
 io.open(os.path.join(os.environ['TEMP'], 'report.txt'), 'w', encoding='utf-8').write('\n'.join(lines))
 print('ok', tot, low)

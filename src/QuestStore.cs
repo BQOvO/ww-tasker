@@ -42,14 +42,24 @@ namespace WuwaChecklist
 
             // 两份都有的时候比一下谁新：内嵌的更新（换了新版本 exe）就以它为准，
             // 再把本地那份并进去，这样用户手工加的任务不会丢。
-            if (local != null && builtin != null
-                && string.CompareOrdinal(builtin.UpdatedAt, local.UpdatedAt) > 0)
+            if (local != null && builtin != null)
             {
-                int merged, added;
-                builtin.MergeFrom(DropLegacy(local), out merged, out added);
-                SourceNote = "内置（v" + builtin.GameVersion + "）";
-                WriteLocal(builtin);   // 落一份，下次启动就不用再合一次
-                return builtin;
+                // schemaVersion 涨了说明任务库整体换了血（0.5.0 从库街区换成 B 站合集），
+                // 这时候不能合，只能整份换掉——否则两套 id、两套名字会一起堆在左列。
+                if (builtin.SchemaVersion > local.SchemaVersion)
+                {
+                    SourceNote = "内置（v" + builtin.GameVersion + "）";
+                    WriteLocal(builtin);
+                    return builtin;
+                }
+                if (string.CompareOrdinal(builtin.UpdatedAt, local.UpdatedAt) > 0)
+                {
+                    int merged, added;
+                    builtin.MergeFrom(DropLegacy(local), out merged, out added);
+                    SourceNote = "内置（v" + builtin.GameVersion + "）";
+                    WriteLocal(builtin);   // 落一份，下次启动就不用再合一次
+                    return builtin;
+                }
             }
 
             if (local != null)

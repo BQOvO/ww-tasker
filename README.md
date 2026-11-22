@@ -10,8 +10,8 @@
 
 清地图最烦的不是打怪，是「这个地区我到底还差哪个任务」。这软件就是干这个的：把每个地区要做的任务列成一张表，你做到哪就勾到哪，剩下的自然浮出来。
 
-- **只要任务**。潮汐、伴星、道引、纪闻、危行、隐藏，宝箱声匣成就一概不管。数据来自库街区官方 wiki，18 个区域共 309 条。
-- **左右两列，各管各的**。左列按版本折叠，一次只展开一章（摸鱼的时候不会一屏塞满 18 个地区）；右列按类型分页签，只看潮汐或者只看隐藏都行，签位只列这个区域真有的类型。
+- **只要任务**。潮汐、伴星、道引、纪闻、危行、隐藏、活动，宝箱声匣成就一概不管。数据来自 B 站合集，11 个区域共 335 条。
+- **左右两列，各管各的**。左列按大地图折叠，一次只展开一张图（摸鱼的时候不会一屏塞满 11 个地区）；右列按类型分页签，只看潮汐或者只看隐藏都行，签位只列这个区域真有的类型。
 - **三态**：未开始 / 进行中 / 已完成。点圆圈就换一档，不用开下拉框。
 - **隐藏任务单独标出来**。那种没有追踪、得靠走近才触发的，用灰色 ▸ 标记，免得你满地图乱转找一个根本不会出现在任务列表里的东西。
 - **每条能写备注**。右键写一行，比如「前置没做完」。
@@ -42,21 +42,21 @@
 
 程序内 `⋯` → `检查任务库更新…` 会从仓库拉最新的那份，**跟你本地这份合并**（同地区同名合成一条，你手工加的任务不会被冲掉），拉失败就继续用本地/内置的，不会把程序搞坏。
 
-格式长这样（现在这份是库街区官方 wiki 的「任务合集」导出来的，共 18 个区域 / 309 条）：
+格式长这样（现在这份是从 B 站合集导出来的，共 11 个区域 / 335 条）：
 
 ```json
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "gameVersion": "3.8",
   "regions": [
     {
       "id": "jz",
       "name": "今州",
-      "chapter": "1.0 瑝珑",
+      "chapter": "瑝珑",
       "order": 10,
       "quests": [
-        { "id": "jz-12048", "name": "嘤鸣初相召", "type": "main" },
-        { "id": "jz-24562", "name": "拍忆今州", "type": "side", "hidden": true }
+        { "id": "jz-10-003", "name": "嘤鸣初相召", "type": "main", "url": "https://www.bilibili.com/video/BV...?p=7" },
+        { "id": "jz-10-041", "name": "水帘洞天", "type": "hidden", "hidden": true }
       ]
     }
   ]
@@ -65,9 +65,10 @@
 
 | 字段 | 说明 |
 | --- | --- |
-| `type` | `main` 潮汐 / `tale` 道引 / `comp` 伴星 / `side` 纪闻 / `expl` 危行 / `hidden` 隐藏 |
+| `type` | `main` 潮汐 / `tale` 道引 / `comp` 伴星 / `side` 纪闻 / `expl` 危行 / `hidden` 隐藏 / `event` 活动 |
 | `hidden` | `true` 表示无追踪、要触发的隐藏任务 |
 | `subArea` | 子地图名，显示在任务名下面 |
+| `url` | 对应 B 站分 P 的链接，任务右键菜单里能直接打开 |
 | `note` | 写死在库里的说明（你自己写的备注在存档里，不在这） |
 
 > ⚠️ **`id` 定下来就不要改了。** 存档只记 id 不记任务名，改 id 等于那条记录丢了。改名字、改错字、改子地图都不影响进度。
@@ -126,9 +127,11 @@ git push origin v0.1.0
 
 `tools/` 下面几个脚本跟程序本体无关，是灌数据和维护用的：
 
-- `import_wiki.py` —— 从库街区官方 wiki 的「任务合集」拉全部任务，按名字和版本批次判地区，生成 `data/quests.json`
-- `report_guess.py` —— 把 `data/quests.json` 里哪条地区是高置信、哪条是推出来的，列成 `docs/任务库来源.md`
-- `bili_titles.py` —— 拉 B 站合集 / 系列 / 多 P 视频的所有小标题，用来捞攻略里的隐藏任务名
+- `bili_titles.py` —— 拉 B 站合集 / 系列 / 多 P 视频的所有小标题（灌数据的原料）
+- `parse_bili.py` —— 把分 P 标题拆成「类型 + 任务名」，剥掉宝箱、成就、声匣这些尾巴
+- `import_bili.py` —— 把解析结果写成 `data/quests.json`（判地区、排序、去重、生成 id）
+- `report_guess.py` —— 统计每条任务的地区是高置信还是按版本推的，输出 `docs/任务库来源.md`
+- `import_wiki.py` / `report_guess.py` 的旧版 —— 上一代数据源（库街区 wiki），留着备查，现在不用了
 - `make_icon.py` —— 生成 `src/app.ico`
 
 `bili_titles.py` 的用法：
@@ -144,6 +147,16 @@ python tools/bili_titles.py up:515745520
 ```
 
 不加 `--txt` 就直接打印到屏幕；`--json out.json` 出结构化结果。不需要登录，只用标准库。
+
+重新灌一遍任务库：
+
+```powershell
+python tools/bili_titles.py 合集:570235512/6498351 --json $env:TEMP\quest_src.json
+python tools/import_bili.py $env:TEMP\quest_src.json
+python tools/report_guess.py
+```
+
+`import_bili.py` 会保住旧库里同地区同名的 id，所以你已有的进度不会因为重灌一遍全丢。
 
 提交信息按 [Conventional Commits](https://www.conventionalcommits.org/) 写（`feat:` / `fix:` / `data:` …），更新日志才分得清组。
 

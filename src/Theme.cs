@@ -53,6 +53,7 @@ namespace WuwaChecklist
                 case QuestType.Tale: return Color.FromArgb(255, 143, 184, 240);  // 道引 蓝
                 case QuestType.Side: return Color.FromArgb(255, 199, 168, 242);  // 纪闻 紫
                 case QuestType.Expl: return Color.FromArgb(255, 240, 148, 106);  // 危行 橙
+                case QuestType.Event: return Color.FromArgb(255, 246, 132, 164); // 活动 玫红
                 default: return Color.FromArgb(255, 176, 182, 186);              // 隐藏 灰
             }
         }

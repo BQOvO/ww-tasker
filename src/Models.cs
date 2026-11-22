@@ -12,6 +12,7 @@ namespace WuwaChecklist
         public const string Side = "side";   // 纪闻任务
         public const string Expl = "expl";   // 危行任务
         public const string Hidden = "hidden"; // 隐藏任务（没追踪、要自己触发的那些）
+        public const string Event = "event";   // 活动任务（限时，攻略合集里单独标出来的）
 
         public static string Label(string t)
         {
@@ -23,6 +24,7 @@ namespace WuwaChecklist
                 case Side: return "纪闻";
                 case Expl: return "危行";
                 case Hidden: return "隐藏";
+                case Event: return "活动";
                 default: return t ?? "";
             }
         }
@@ -39,6 +41,7 @@ namespace WuwaChecklist
                 case "side": case "支线": case "纪闻": case "纪闻任务": return Side;
                 case "expl": case "exploration": case "探索": case "危行": case "危行任务": return Expl;
                 case "hidden": case "隐藏": case "隐藏任务": return Hidden;
+                case "event": case "活动": case "活动任务": return Event;
                 default: return t;
             }
         }

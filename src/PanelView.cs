@@ -241,10 +241,33 @@ namespace WuwaChecklist
 
             foreach (var ch in order)
             {
+                // 这一章只有一张地图的时候，标题和地图名会重成「黑海岸 / 黑海岸」，
+                // 折一层也是白折，直接把地图摊到顶层。
+                if (map[ch].Count == 1)
+                {
+                    rows.Add(new LeftRow { Kind = "region", Chapter = null, Region = map[ch][0], H = Theme.RegionRowH });
+                    continue;
+                }
+
                 bool openThis = string.Equals(ch, open, StringComparison.Ordinal);
                 rows.Add(new LeftRow { Kind = "chapter", Chapter = ch, H = ChapterH });
 
-                if (!openThis) continue;
+                if (!openThis)
+                {
+                    // 收起的章节里要是装着当前选中的地图，那一行还是留着——
+                    // 不然右列写着「今州」，左列找不到它在哪一章。
+                    var cur = _host.CurrentRegion;
+                    if (cur != null)
+                    {
+                        foreach (var r in map[ch])
+                            if (r.Id == cur.Id)
+                            {
+                                rows.Add(new LeftRow { Kind = "region", Chapter = ch, Region = r, H = Theme.RegionRowH });
+                                break;
+                            }
+                    }
+                    continue;
+                }
                 foreach (var r in map[ch])
                     rows.Add(new LeftRow { Kind = "region", Chapter = ch, Region = r, H = Theme.RegionRowH });
             }
@@ -296,16 +319,17 @@ namespace WuwaChecklist
             int done, total;
             _host.CountRegion(r, out done, out total);
 
-            // 缩进一格，视觉上挂在章节下面
+            // 挂在章节下面才缩进一格；顶层的地图不缩
+            double ox = row.Chapter == null ? 16 : 26;
             var nm = TextFit(r.Name, new[] { 12.5, 11.5, 10.5, 9.5 },
-                sel ? Theme.BrTxt : Theme.BrRTxt, sel, w - 26 - 42);
-            dc.DrawText(nm, new Point(26, y0 + 6 + Math.Max(0, (22 - nm.Height) / 2)));
+                sel ? Theme.BrTxt : Theme.BrRTxt, sel, w - ox - 42);
+            dc.DrawText(nm, new Point(ox, y0 + 6 + Math.Max(0, (22 - nm.Height) / 2)));
 
             var cnt = Text(done + "/" + total, 10.5, sel ? Theme.BrAcc : Theme.BrSub);
             dc.DrawText(cnt, new Point(w - 12 - cnt.Width, y0 + 10));
 
             // 2px 进度条
-            double bx = 26, by = y0 + 31, bw = w - 26 - 14;
+            double bx = ox, by = y0 + 31, bw = w - ox - 14;
             dc.DrawRectangle(Theme.Scaled(Theme.BarBg, op), null, new Rect(bx, by, bw, 2));
             double frac = total <= 0 ? 0 : (double)done / total;
             if (frac > 0) dc.DrawRectangle(Theme.BrAcc, null, new Rect(bx, by, Math.Max(1, bw * frac), 2));
@@ -414,7 +438,8 @@ namespace WuwaChecklist
         private List<string> TypesIn(Region region)
         {
             var order = new[] { QuestType.Main, QuestType.Comp, QuestType.Tale,
-                                QuestType.Side, QuestType.Expl, QuestType.Hidden };
+                                QuestType.Side, QuestType.Expl, QuestType.Hidden,
+                                QuestType.Event };
             var have = new HashSet<string>(StringComparer.Ordinal);
             foreach (var q in region.Quests) have.Add(q.Type);
 
@@ -450,32 +475,53 @@ namespace WuwaChecklist
 
             double tabH = 21;
             double ty = Theme.HeaderH + Theme.TitleH + 3;
-            double x = left + 14;
+            double x0 = left + 14;
             double right = w - 12;
 
+            // 签一多就会顶出右边缘（黎那汐塔有 7 个）。先按最宽松的排，放不下就
+            // 整排收紧字号、边距、间距，取第一个装得下的方案；全试过还装不下就硬裁。
+            var layouts = new[]
+            {
+                new { Size = 10.5, PadX = 14.0, Gap = 4.0 },
+                new { Size = 10.0, PadX = 12.0, Gap = 3.0 },
+                new { Size = 9.5, PadX = 10.0, Gap = 3.0 },
+                new { Size = 9.0, PadX = 8.0, Gap = 2.0 },
+            };
+
+            double[] widths = null;
+            double padX = 14, gap = 4, size = 10.5;
+            foreach (var l in layouts)
+            {
+                var ws = new double[labels.Count];
+                double sum = 0;
+                for (int i = 0; i < labels.Count; i++)
+                {
+                    bool on = string.Equals(keys[i], cur, StringComparison.Ordinal);
+                    var m = Text(labels[i], l.Size, on ? Theme.BrAcc : Theme.BrSub, on);
+                    ws[i] = Math.Round(m.Width + l.PadX);
+                    sum += ws[i];
+                }
+                sum += l.Gap * (labels.Count - 1);
+                widths = ws; padX = l.PadX; gap = l.Gap; size = l.Size;
+                if (x0 + sum <= right) break;
+            }
+
+            dc.PushClip(new RectangleGeometry(new Rect(left, ty - 2, cw, tabH + 4)));
+            double x = x0;
             for (int i = 0; i < labels.Count; i++)
             {
                 bool on = string.Equals(keys[i], cur, StringComparison.Ordinal);
-                var t = Text(labels[i], 10.5, on ? Theme.BrAcc : Theme.BrSub, on);
-                double tw = t.Width + 14;
-
-                // 挤不下就整排收窄：宁可字小一点，也别让最后一个签跑出去
-                if (x + tw > right)
-                {
-                    t = Text(labels[i], 9.5, on ? Theme.BrAcc : Theme.BrSub, on);
-                    t.MaxTextWidth = Math.Max(18, right - x - 10);
-                    t.MaxLineCount = 1;
-                    t.Trimming = TextTrimming.CharacterEllipsis;
-                    tw = Math.Max(20, t.Width + 10);
-                }
+                var t = Text(labels[i], size, on ? Theme.BrAcc : Theme.BrSub, on);
+                double tw = widths[i];
 
                 var r = new Rect(x, ty, tw, tabH);
                 if (on) dc.DrawRectangle(Theme.BrAcc, null, new Rect(x, ty + tabH - 1.5, tw, 1.5));
                 dc.DrawText(t, new Point(x + (tw - t.Width) / 2, ty + (tabH - t.Height) / 2));
 
                 _hits.Add(new Hit { R = r, Kind = "tab", Arg = keys[i] });
-                x += tw + 4;
+                x += tw + gap;
             }
+            dc.Pop();
         }
 
         private void DrawQuestRow(DrawingContext dc, Quest q, double left, double top, double cw, double rh, double op)
