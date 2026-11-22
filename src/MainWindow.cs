@@ -555,6 +555,7 @@ namespace WuwaChecklist
             m.AddItem("检查程序更新…", () => CheckAppUpdate(manual: true));
             m.AddItem("版本 " + App.Version + " · 查看更新日志", () => OpenUrl(QuestStore.RepoUrl + "/releases"));
             m.AddItem("项目主页", () => OpenUrl(QuestStore.RepoUrl));
+            m.AddItem("开源协议 AGPL-3.0", () => OpenUrl(QuestStore.RepoUrl + "/blob/main/LICENSE"));
             m.AddItem("退出", () => Close());
 
             m.ShowAt(_panel);

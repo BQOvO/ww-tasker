@@ -15,7 +15,7 @@
     <AssemblyVersion>0.7.0.0</AssemblyVersion>
     <Company>BQOvO</Company>
     <Product>ww-tasker</Product>
-    <Copyright>MIT</Copyright>
+    <Copyright>AGPL-3.0</Copyright>
     <DebugType>none</DebugType>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <SatelliteResourceLanguages>zh-Hans</SatelliteResourceLanguages>
