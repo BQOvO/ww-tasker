@@ -104,6 +104,13 @@ dotnet build src/WuwaChecklist.csproj -c Release
 
 界面全用 C# 手写（没有 XAML），配色和尺寸在 `src/Theme.cs`，绘制在 `src/PanelView.cs`。
 
+图标是 `tools/make_icon.py` 从 `assets/logo.png` 生成的 `src/app.ico`（7 帧：16/24/32/48/64/128/256）。换图就换掉 `assets/logo.png` 再跑一次：
+
+```powershell
+python tools/make_icon.py
+dotnet build src/WuwaChecklist.csproj -c Release
+```
+
 ## 发版
 
 打 tag 就自动打包：
@@ -114,6 +121,29 @@ git push origin v0.1.0
 ```
 
 `.github/workflows/release.yml` 会编译、打 zip、用 [git-cliff](https://github.com/orhun/git-cliff) 按 `cliff.toml` 生成更新日志，然后发到 Releases。
+
+## 工具
+
+`tools/` 下面几个脚本跟程序本体无关，是灌数据和维护用的：
+
+- `import_wiki.py` —— 从库街区官方 wiki 的「任务合集」拉全部任务，按名字和版本批次判地区，生成 `data/quests.json`
+- `report_guess.py` —— 把 `data/quests.json` 里哪条地区是高置信、哪条是推出来的，列成 `docs/任务库来源.md`
+- `bili_titles.py` —— 拉 B 站合集 / 系列 / 多 P 视频的所有小标题，用来捞攻略里的隐藏任务名
+- `make_icon.py` —— 生成 `src/app.ico`
+
+`bili_titles.py` 的用法：
+
+```powershell
+# 给个视频链接，它自己判断是合集还是分 P
+python tools/bili_titles.py https://www.bilibili.com/video/BV17QwyzVEbZ/ --txt out.txt
+
+# 直接点名合集 / 系列 / 某个 UP 的全部合集
+python tools/bili_titles.py 合集:515745520/9518666 --txt out.txt
+python tools/bili_titles.py 系列:515745520/12345
+python tools/bili_titles.py up:515745520
+```
+
+不加 `--txt` 就直接打印到屏幕；`--json out.json` 出结构化结果。不需要登录，只用标准库。
 
 提交信息按 [Conventional Commits](https://www.conventionalcommits.org/) 写（`feat:` / `fix:` / `data:` …），更新日志才分得清组。
 
