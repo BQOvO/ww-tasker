@@ -472,6 +472,7 @@ namespace WuwaChecklist
             int dup = Db.CountMerged();
             if (dup > 0) m.AddItem("同名已合并 " + dup + " 条", null, true);
             m.AddSeparator();
+            m.AddItem("任务归属是怎么定出来的…", () => OpenUrl(QuestStore.RepoUrl + "/blob/main/docs/任务库来源.md"));
             m.AddItem("重新读取本地任务库", () =>
             {
                 Db = QuestStore.Load();

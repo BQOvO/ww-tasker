@@ -43,6 +43,38 @@ namespace WuwaChecklist
         public static readonly Color BarBg = Color.FromArgb(205, 72, 76, 80);      // 进度条轨道
         public static readonly Color CheckInk = Color.FromArgb(255, 12, 50, 46);   // 勾的墨色（压在青绿上）
 
+        // ---- 类型标签：一种类型一个色，别让六种任务看起来一模一样 ----
+        public static Color TypeColor(string type)
+        {
+            switch (type)
+            {
+                case QuestType.Main: return Color.FromArgb(255, 63, 224, 200);   // 潮汐 青绿
+                case QuestType.Comp: return Color.FromArgb(255, 232, 195, 106);  // 伴星 金
+                case QuestType.Tale: return Color.FromArgb(255, 143, 184, 240);  // 道引 蓝
+                case QuestType.Side: return Color.FromArgb(255, 199, 168, 242);  // 纪闻 紫
+                case QuestType.Expl: return Color.FromArgb(255, 240, 148, 106);  // 危行 橙
+                default: return Color.FromArgb(255, 176, 182, 186);              // 隐藏 灰
+            }
+        }
+
+        /// <summary>标签底：类型本色压到接近实心，让它在深底上一眼就能扫到。</summary>
+        public static Brush TypeBack(string type, double opacity)
+        {
+            var c = TypeColor(type);
+            return Scaled(Color.FromArgb(214, c.R, c.G, c.B), opacity);
+        }
+
+        /// <summary>标签字：压在亮色底上，用深墨才看得清。</summary>
+        public static Brush TypeTagInk
+        {
+            get { return Freeze(Color.FromArgb(255, 16, 18, 20)); }
+        }
+
+        public static Brush TypeInk(string type)
+        {
+            return Freeze(TypeColor(type));
+        }
+
         // ---- 静态画刷缓存（UI 线程独占，没问题）----
         public static readonly Brush BrBg = Freeze(Bg);
         public static readonly Brush BrHead = Freeze(Head);

@@ -176,8 +176,9 @@ namespace WuwaChecklist
                 int done, total;
                 _host.CountRegion(r, out done, out total);
 
-                var nm = Text(r.Name, 12.5, sel ? Theme.BrTxt : Theme.BrRTxt, sel, w - 16 - 52);
-                dc.DrawText(nm, new Point(16, y0 + 8));
+                var nm = TextFit(r.Name, new[] { 12.5, 11.5, 10.5, 9.5 },
+                    sel ? Theme.BrTxt : Theme.BrRTxt, sel, w - 16 - 46);
+                dc.DrawText(nm, new Point(16, y0 + 6 + Math.Max(0, (22 - nm.Height) / 2)));
 
                 var cnt = Text(done + "/" + total, 10.5, sel ? Theme.BrAcc : Theme.BrSub);
                 dc.DrawText(cnt, new Point(w - 12 - cnt.Width, y0 + 10));
@@ -370,12 +371,12 @@ namespace WuwaChecklist
 
             // 类型标签 + 子地图
             double mx = tx;
-            double metaY = top + 24;
-            var tag = Text(q.TypeLabel, 9, Theme.BrTagTx);
-            var tagRect = new Rect(mx, metaY, tag.Width + 8, 13);
-            dc.DrawGeometry(Theme.Scaled(Theme.TagBg, op), null, RRect(tagRect, 2, 2, 2, 2));
-            dc.DrawText(tag, new Point(mx + 4, metaY + 1.5));
-            mx = tagRect.Right + 6;
+            double metaY = top + 23;
+            var tag = Text(q.TypeLabel, 10, Theme.TypeTagInk, true);
+            var tagRect = new Rect(mx, metaY, tag.Width + 10, 15);
+            dc.DrawGeometry(Theme.TypeBack(q.Type, op), null, RRect(tagRect, 2.5, 2.5, 2.5, 2.5));
+            dc.DrawText(tag, new Point(mx + 5, metaY + 1.5));
+            mx = tagRect.Right + 7;
 
             if (!string.IsNullOrEmpty(q.SubArea))
             {
@@ -628,8 +629,32 @@ namespace WuwaChecklist
             if (maxW > 0)
             {
                 ft.MaxTextWidth = Math.Max(8, maxW);
+                // 一律单行：中文按字符折行，多折一行就会顶掉下面那根进度条或标签
+                ft.MaxLineCount = 1;
                 ft.Trimming = TextTrimming.CharacterEllipsis;
             }
+            return ft;
+        }
+
+        /// <summary>
+        /// 单行、放得下就用原字号，放不下就逐级缩，缩到底还放不下才省略号。
+        /// 不给 MaxLineCount=1 的话中文会按字符折行，把下面那根进度条顶掉。
+        /// </summary>
+        private FormattedText TextFit(string s, double[] sizes, Brush br, bool bold, double maxW)
+        {
+            FormattedText ft = null;
+            foreach (var size in sizes)
+            {
+                // 先量一次「不限宽」的自然宽度——在 MaxTextWidth 里量永远是放得下的，
+                // 那样第一档就被判通过，字号根本不会缩
+                var probe = new FormattedText(s ?? "", CultureInfo.CurrentUICulture, FlowDirection.LeftToRight,
+                    bold ? Theme.Bold : Theme.Regular, size, br, _dpi);
+                ft = probe;
+                if (probe.WidthIncludingTrailingWhitespace <= maxW) break;
+            }
+            ft.MaxTextWidth = Math.Max(8, maxW);
+            ft.MaxLineCount = 1;
+            ft.Trimming = TextTrimming.CharacterEllipsis;
             return ft;
         }
 
