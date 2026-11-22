@@ -169,6 +169,19 @@ namespace WuwaChecklist
         /// <summary>右列的类型分页签："" = 全部。</summary>
         public string TypeFilter = "";
 
+        /// <summary>跨版本搜任务名。非空时右列改成搜索结果列表。</summary>
+        public string SearchText = "";
+
+        /// <summary>每个（区域+类型+搜索词）组合各自的滚动位置，切回来不跳回顶部。</summary>
+        public Dictionary<string, double> Scrolls = new Dictionary<string, double>(StringComparer.Ordinal);
+        /// <summary>左列区域列表的滚动位置。</summary>
+        public double RegionScroll = 0;
+
+        /// <summary>界面等比缩放（1.0 原尺寸）。高 DPI 屏上能整体放大一档。</summary>
+        public double UiScale = 1.0;
+        /// <summary>托盘图标。关掉窗口就不留痕迹了，留个开关给不要的人。</summary>
+        public bool ShowTrayIcon = true;
+
         public int WinX = int.MinValue;
         public int WinY = int.MinValue;
         public int WinW = 392;
@@ -192,6 +205,20 @@ namespace WuwaChecklist
             if (!string.IsNullOrEmpty(LastRegion)) d["lastRegion"] = LastRegion;
             if (!string.IsNullOrEmpty(OpenChapter)) d["openChapter"] = OpenChapter;
             if (!string.IsNullOrEmpty(TypeFilter)) d["typeFilter"] = TypeFilter;
+            if (!string.IsNullOrEmpty(SearchText)) d["searchText"] = SearchText;
+            if (Scrolls.Count > 0)
+            {
+                var sc = new Dictionary<string, object>(StringComparer.Ordinal);
+                foreach (var kv in Scrolls)
+                {
+                    if (kv.Key.Length == 0 || kv.Value <= 0) continue;
+                    sc[kv.Key] = kv.Value;
+                }
+                if (sc.Count > 0) d["scrolls"] = sc;
+            }
+            if (RegionScroll > 0) d["regionScroll"] = RegionScroll;
+            d["uiScale"] = UiScale;
+            d["showTrayIcon"] = ShowTrayIcon;
             if (WinX != int.MinValue) d["winX"] = WinX;
             if (WinY != int.MinValue) d["winY"] = WinY;
             d["winW"] = WinW;
@@ -216,6 +243,26 @@ namespace WuwaChecklist
             s.LastRegion = Json.Str(d, "lastRegion", "");
             s.OpenChapter = Json.Str(d, "openChapter", "");
             s.TypeFilter = Json.Str(d, "typeFilter", "");
+            s.SearchText = Json.Str(d, "searchText", "");
+            s.Scrolls.Clear();
+            var scObj = d.ContainsKey("scrolls") ? Json.Obj(d["scrolls"]) : null;
+            if (scObj != null)
+            {
+                foreach (var kv in scObj)
+                {
+                    if (kv.Key.Length == 0) continue;
+                    double v = 0;
+                    if (!double.TryParse(Convert.ToString(kv.Value, System.Globalization.CultureInfo.InvariantCulture),
+                            System.Globalization.NumberStyles.Float,
+                            System.Globalization.CultureInfo.InvariantCulture, out v)) continue;
+                    if (v > 0) s.Scrolls[kv.Key] = v;
+                }
+            }
+            s.RegionScroll = Json.Dbl(d, "regionScroll", 0);
+            if (s.RegionScroll < 0) s.RegionScroll = 0;
+            s.UiScale = Json.Dbl(d, "uiScale", 1.0);
+            if (s.UiScale < 0.6 || s.UiScale > 2.0) s.UiScale = 1.0;
+            s.ShowTrayIcon = Json.Bool(d, "showTrayIcon", true);
             s.WinX = Json.Int(d, "winX", int.MinValue);
             s.WinY = Json.Int(d, "winY", int.MinValue);
             s.WinW = Json.Int(d, "winW", DefaultWinW);

@@ -7,7 +7,7 @@ using System.Windows.Media;
 namespace WuwaChecklist
 {
     /// <summary>
-    /// 折叠后的细条。整个面板缩成一根 236×30 的条，只报当前区域进度。
+    /// 折叠后的细条。整个面板缩成一根 236×30 的条，只报当前那一项进度。
     /// 面积小了，反而不该更透——扫一眼就要读到数。
     /// </summary>
     internal sealed class StripeView : FrameworkElement

@@ -6,7 +6,7 @@ namespace WuwaChecklist
 {
     internal sealed class App : Application
     {
-        public const string Version = "0.7.1";
+        public const string Version = "0.8.0";
 
         private MainWindow _mw;
         private System.Threading.Mutex _mutex;
@@ -26,13 +26,14 @@ namespace WuwaChecklist
 
         /// <summary>
         /// 离屏渲染界面截图，给 README 用。
-        /// 用法：WuwaChecklist.exe --shot 输出.png [宽 高] [--folded]
+        /// 用法：WuwaChecklist.exe --shot 输出.png [宽 高] [--folded] [--plain] [--scale 1.15]
         /// 走这条路是因为面板半透明，截屏会把桌面一起拍进去。
         /// </summary>
         private static void RunShot(string[] args)
         {
             string outPath = null;
             double w = 392, h = 440;
+            double scale = 1.0;
             bool folded = false;
             bool backdrop = true;
             bool hasW = false;
@@ -42,6 +43,13 @@ namespace WuwaChecklist
                 if (a == "--folded") { folded = true; continue; }
                 if (a == "--plain") { backdrop = false; continue; }
                 if (a == "--shot") { if (i + 1 < args.Length) outPath = args[++i]; continue; }
+                if (a == "--scale")
+                {
+                    if (i + 1 < args.Length) double.TryParse(args[++i],
+                        System.Globalization.NumberStyles.Float,
+                        System.Globalization.CultureInfo.InvariantCulture, out scale);
+                    continue;
+                }
                 double v;
                 if (double.TryParse(a, System.Globalization.NumberStyles.Float,
                         System.Globalization.CultureInfo.InvariantCulture, out v))
@@ -56,7 +64,7 @@ namespace WuwaChecklist
             app.ShutdownMode = ShutdownMode.OnExplicitShutdown;
             try
             {
-                Shot.Render(outPath, w, h, folded, backdrop);
+                Shot.Render(outPath, w, h, folded, backdrop, scale);
             }
             catch (Exception ex)
             {

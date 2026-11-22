@@ -172,6 +172,18 @@ namespace WuwaChecklist
 
         private Dictionary<string, Quest> _byId = new Dictionary<string, Quest>(StringComparer.Ordinal);
 
+        /// <summary>整份库都没有 chapter 就是按版本分组（0.7.0 起是这样）。</summary>
+        public bool ByVersion
+        {
+            get { return Regions.Count > 0 && string.IsNullOrEmpty(Regions[0].Chapter); }
+        }
+
+        /// <summary>左列那一列的东西叫什么：版本还是区域。措辞到处要用，别各写各的。</summary>
+        public static string GroupLabel(QuestDatabase db)
+        {
+            return db != null && db.ByVersion ? "版本" : "区域";
+        }
+
         public void Reindex()
         {
             _byId.Clear();

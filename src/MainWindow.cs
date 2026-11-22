@@ -24,12 +24,14 @@ namespace WuwaChecklist
         private readonly StripeView _stripe;
         private readonly Grid _root;
         private HotkeyManager _hotkeys;
+        private TrayIcon _tray;
         private readonly DispatcherTimer _saveTimer;
         private readonly DispatcherTimer _fullTimer;
         private TextBox _noteBox;
         private Point _dragOrigin;
         private Rect _dragStart;
         private bool _dragging;
+        private bool _syncing;   // 自己在改窗口尺寸的时候别把数写回存档
 
         public MainWindow()
         {
@@ -38,11 +40,14 @@ namespace WuwaChecklist
             Background = Brushes.Transparent;
             Topmost = true;
             ShowInTaskbar = true;
-            ResizeMode = ResizeMode.NoResize;
+            // 面板是自绘的，窗口边框得自己处理（WM_NCHITTEST），但模式要放开
+            ResizeMode = ResizeMode.CanResize;
             Title = "鸣潮 · 查漏补缺";
             Icon = AppIcon.Load();
             Width = 392;
             Height = 440;
+            MinWidth = 300;
+            MinHeight = 360;
             SnapsToDevicePixels = true;
             UseLayoutRounding = true;
             WindowStartupLocation = WindowStartupLocation.Manual;
@@ -74,7 +79,16 @@ namespace WuwaChecklist
             SourceInitialized += OnSourceInitialized;
             Loaded += OnLoaded;
             Closing += OnClosing;
-            SizeChanged += (s, e) => { if (!Folded) { Store.Settings.WinW = (int)Math.Round(Width); Store.Settings.WinH = (int)Math.Round(Height); } };
+            SizeChanged += (s, e) =>
+            {
+                if (Folded || _syncing) return;
+                // 存的是没缩放时的尺寸，按当前缩放除回去
+                double sc = ScaleNow;
+                Store.Settings.WinW = (int)Math.Round(Width / sc);
+                Store.Settings.WinH = (int)Math.Round(Height / sc);
+                // 拖边缘改大小跟拖窗口一样得落盘，不然拉完了关掉就白拉了
+                SaveSoon();
+            };
             LocationChanged += OnLocationChanged;
 
             SetFoldedVisual(Store.Settings.Folded, false);
@@ -86,6 +100,9 @@ namespace WuwaChecklist
         {
             var hwnd = new WindowInteropHelper(this).Handle;
             Win32.HideFromAltTab(hwnd);
+            // 无边框窗口要自己回答「这一下点在哪条边上」，否则 ResizeMode 放开了也拉不动
+            var src = PresentationSource.FromVisual(this) as HwndSource;
+            if (src != null) src.AddHook(WndProc);
             _hotkeys = new HotkeyManager(hwnd);
             ApplyHotkeys();
             _hotkeys.Toggle += (s, a) => ToggleVisible();
@@ -93,6 +110,13 @@ namespace WuwaChecklist
             _hotkeys.Fold += (s, a) => SetFolded(!Folded);
 
             var st = Store.Settings;
+            // 存档里的尺寸可能被折叠那会儿写坏了，太小的直接忽略
+            double sc = ScaleNow;
+            if (st.WinW >= 340) Width = Math.Round(st.WinW * sc);
+            if (st.WinH >= 360) Height = Math.Round(st.WinH * sc);
+            MinWidth = Math.Round(300 * sc);
+            MinHeight = Math.Round(360 * sc);
+
             if (st.WinX > -10000 && st.WinY > -10000)
             {
                 Left = st.WinX; Top = st.WinY;
@@ -103,14 +127,13 @@ namespace WuwaChecklist
                 Left = wa.Right - Width - 40;
                 Top = wa.Top + 80;
             }
-            // 存档里的尺寸可能被折叠那会儿写坏了，太小的直接忽略
-            if (st.WinW >= 340) Width = st.WinW;
-            if (st.WinH >= 360) Height = st.WinH;
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
             _fullTimer.Start();
+            ApplyUiScale();
+            UpdateTray();
             // 首次启动，如果本地没有任务库，后台悄悄拉一次
             if (!QuestStore.HasLocalCopy)
                 System.Threading.Tasks.Task.Run(() => TryUpdateQuiet());
@@ -125,8 +148,140 @@ namespace WuwaChecklist
             _saveTimer.Stop();
             _fullTimer.Stop();
             if (_hotkeys != null) { _hotkeys.Dispose(); _hotkeys = null; }
+            if (_tray != null) { _tray.Dispose(); _tray = null; }
+            _panel.SaveScroll();
             SaveGeometry();
             Store.Save();
+        }
+
+        /// <summary>
+        /// 只为了「拖动窗口边缘改大小」这一件事。窗口是 WindowStyle.None，
+        /// 系统不知道哪块是边框，得自己按 6 像素的边算出来告诉她。
+        /// 折叠成细条、或者处于点击穿透状态时一律放行——那时候不该拉。
+        /// </summary>
+        private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        {
+            const int WM_NCHITTEST = 0x84;
+            if (msg == WM_NCHITTEST && !Folded && !Locked)
+            {
+                // 坐标就在 lParam 的低字（x）高字（y）里，别去问光标——
+                // 系统问的是「这一点算在哪条边」，跟鼠标此刻实际停在哪是两回事
+                int sx = (short)(lParam.ToInt64() & 0xFFFF);
+                int sy = (short)((lParam.ToInt64() >> 16) & 0xFFFF);
+                Win32.RECT r;
+                if (Win32.GetWindowRect(hwnd, out r))
+                {
+                    const int g = 6;
+                    bool left = sx >= r.Left && sx < r.Left + g;
+                    bool right = sx < r.Right && sx > r.Right - g;
+                    bool top = sy >= r.Top && sy < r.Top + g;
+                    bool bottom = sy < r.Bottom && sy > r.Bottom - g;
+                    int ht = 0;
+                    if (top && left) ht = 13;           // HTTOPLEFT
+                    else if (top && right) ht = 14;     // HTTOPRIGHT
+                    else if (bottom && left) ht = 16;   // HTBOTTOMLEFT
+                    else if (bottom && right) ht = 17;  // HTBOTTOMRIGHT
+                    else if (left) ht = 10;             // HTLEFT
+                    else if (right) ht = 11;            // HTRIGHT
+                    else if (top) ht = 12;              // HTTOP
+                    else if (bottom) ht = 15;           // HTBOTTOM
+                    if (ht != 0)
+                    {
+                        handled = true;
+                        return new IntPtr(ht);
+                    }
+                }
+            }
+            return IntPtr.Zero;
+        }
+
+        /// <summary>托盘图标开着还是关着——设置里那个开关就是调它。</summary>
+        public void UpdateTray()
+        {
+            bool want = Store.Settings.ShowTrayIcon;
+            if (want && _tray == null)
+            {
+                try
+                {
+                    _tray = new TrayIcon(this);
+                    _tray.Show();
+                }
+                catch
+                {
+                    _tray = null;
+                }
+            }
+            else if (!want && _tray != null)
+            {
+                _tray.Dispose();
+                _tray = null;
+            }
+        }
+
+        /// <summary>界面等比缩放。挂在两个自绘控件的 LayoutTransform 上，字号行高一起走。</summary>
+        public void ApplyUiScale()
+        {
+            double s = Store.Settings.UiScale;
+            if (s < 0.6 || s > 2.0) s = 1.0;
+            var tf = (s > 0.999 && s < 1.001) ? Transform.Identity : new ScaleTransform(s, s);
+            _panel.LayoutTransform = tf;
+            _stripe.LayoutTransform = tf;
+            // 整块放大之后窗口也得跟着长大，不然右边和下面就被裁掉了
+            SyncWindowToScale();
+            _panel.InvalidateVisual();
+            _stripe.InvalidateVisual();
+        }
+
+        /// <summary>当前字号缩放，越界的值一律当 1。</summary>
+        private double ScaleNow
+        {
+            get
+            {
+                double s = Store.Settings.UiScale;
+                return (s < 0.6 || s > 2.0) ? 1.0 : s;
+            }
+        }
+
+        /// <summary>
+        /// 存档里的 WinW/WinH 记的是「没缩放时的尺寸」，实际窗口大小要乘上缩放。
+        /// 这样改了字号不会把尺寸越改越大。
+        /// </summary>
+        private void SyncWindowToScale()
+        {
+            if (Folded) return;
+            double s = ScaleNow;
+            _syncing = true;
+            try
+            {
+                Width = Math.Max(240, Math.Round(Store.Settings.WinW * s));
+                Height = Math.Max(300, Math.Round(Store.Settings.WinH * s));
+                MinWidth = Math.Round(300 * s);
+                MinHeight = Math.Round(360 * s);
+            }
+            finally
+            {
+                _syncing = false;
+            }
+        }
+
+        /// <summary>
+        /// 搜索：跨版本按名字找任务。用输入框而不是在头部塞文本框，
+        /// 是因为头部那块地方本来就窄，塞进去挤成一团。
+        /// </summary>
+        public void BeginSearch()
+        {
+            string cur = Store.Settings.SearchText ?? "";
+            string v = InputBox("输入任务名的一部分就行，空的表示取消搜索", "搜索任务", cur);
+            if (v == null) return;                      // 取消
+            v = v.Trim();
+            Store.Settings.SearchText = v;
+            if (!string.IsNullOrEmpty(v))
+            {
+                var hit = CurrentShown();
+                if (hit.Count > 0) SelectedQuest = hit[0];
+            }
+            SaveSoon();
+            _panel.InvalidateVisual();
         }
 
         private void OnLocationChanged(object sender, EventArgs e)
@@ -141,10 +296,12 @@ namespace WuwaChecklist
             if (Folded) { st.StripeX = (int)Math.Round(Left); st.StripeY = (int)Math.Round(Top); }
             else
             {
+                // 跟 SizeChanged 一个约定：这里存的是没缩放时的尺寸
+                double sc = ScaleNow;
                 st.WinX = (int)Math.Round(Left);
                 st.WinY = (int)Math.Round(Top);
-                st.WinW = (int)Math.Round(Width);
-                st.WinH = (int)Math.Round(Height);
+                st.WinW = (int)Math.Round(Width / sc);
+                st.WinH = (int)Math.Round(Height / sc);
             }
         }
 
@@ -350,8 +507,9 @@ namespace WuwaChecklist
             }
             else
             {
-                if (st.WinW > 200) Width = st.WinW;
-                if (st.WinH > 200) Height = st.WinH;
+                double sc = ScaleNow;
+                if (st.WinW > 200) Width = Math.Round(st.WinW * sc);
+                if (st.WinH > 200) Height = Math.Round(st.WinH * sc);
                 if (st.WinX > -10000) { Left = st.WinX; Top = st.WinY; }
             }
         }
@@ -396,9 +554,10 @@ namespace WuwaChecklist
                 // 太小就回到默认，不至于展开成一条缝
                 int ww = Store.Settings.WinW >= 340 ? Store.Settings.WinW : 392;
                 int wh = Store.Settings.WinH >= 360 ? Store.Settings.WinH : 440;
-                Width = ww;
-                Height = wh;
-                MinWidth = 300; MinHeight = 360;
+                double sc = ScaleNow;
+                Width = Math.Round(ww * sc);
+                Height = Math.Round(wh * sc);
+                MinWidth = Math.Round(300 * sc); MinHeight = Math.Round(360 * sc);
             }
             _stripe.InvalidateVisual();
             _panel.InvalidateVisual();
@@ -437,9 +596,13 @@ namespace WuwaChecklist
             _noteBox.LostFocus += (sender, e) => EndNoteEdit(true);
 
             var geo = _panel.GetQuestNoteRect(q);
-            _noteBox.Width = Math.Max(60, geo.Width);
-            Canvas.SetLeft(_noteBox, geo.X);
-            Canvas.SetTop(_noteBox, geo.Y);
+            // 备注框挂在 overlay 上，不在面板那棵缩放树里，坐标和字号都得自己乘
+            double sc = ScaleNow;
+            _noteBox.Width = Math.Max(60, Math.Round(geo.Width * sc));
+            _noteBox.Height = Math.Round(18 * sc);
+            _noteBox.FontSize = Math.Round(11 * sc, 1);
+            Canvas.SetLeft(_noteBox, Math.Round(geo.X * sc));
+            Canvas.SetTop(_noteBox, Math.Round(geo.Y * sc));
 
             _overlay = _overlay ?? BuildOverlay();
             _overlay.Children.Add(_noteBox);
@@ -545,8 +708,22 @@ namespace WuwaChecklist
             m.AddItem(Folded ? "展开完整面板" : "折叠成细条", () => SetFolded(!Folded));
 
             m.AddSeparator();
+            m.AddHeader("界面");
+            double s0 = Store.Settings.UiScale;
+            m.AddCheck("字号 90%", Math.Abs(s0 - 0.90) < 0.01, () => SetUiScale(0.90));
+            m.AddCheck("字号 100%", Math.Abs(s0 - 1.00) < 0.01, () => SetUiScale(1.00));
+            m.AddCheck("字号 115%", Math.Abs(s0 - 1.15) < 0.01, () => SetUiScale(1.15));
+            m.AddCheck("任务栏显示图标", Store.Settings.ShowTrayIcon, () =>
+            {
+                Store.Settings.ShowTrayIcon = !Store.Settings.ShowTrayIcon;
+                SaveSoon();
+                UpdateTray();
+            });
+
+            m.AddSeparator();
             m.AddHeader("数据");
             m.AddItem("检查任务库更新…", () => CheckUpdate(manual: true));
+            m.AddItem("导出任务库…", ExportData);
             m.AddItem("任务列表来源…", ShowSourceInfo);
             m.AddItem(Locked ? "快捷键…（解锁后可改）" : "快捷键…", () => ShowHotkeyDialog(), Locked);
 
@@ -565,7 +742,7 @@ namespace WuwaChecklist
         {
             var m = new DarkMenu();
             m.AddHeader("任务库");
-            m.AddItem("区域 " + Db.Regions.Count + " 个 · 任务 " + CountAllQuests() + " 条", null, true);
+            m.AddItem(QuestDatabase.GroupLabel(Db) + " " + Db.Regions.Count + " 个 · 任务 " + CountAllQuests() + " 条", null, true);
             m.AddItem(Db.GameVersion.Length > 0 ? "数据版本 " + Db.GameVersion : "数据版本 未知", null, true);
             m.AddItem(QuestStore.SourceNote, null, true);
             int dup = Db.CountMerged();
@@ -580,6 +757,30 @@ namespace WuwaChecklist
                 _stripe.InvalidateVisual();
             });
             m.ShowAt(_panel);
+        }
+
+        /// <summary>把带勾选和备注的整份任务库存成 json，换机器或者想自己改数据时用。</summary>
+        private void ExportData()
+        {
+            var dlg = new Microsoft.Win32.SaveFileDialog();
+            dlg.Title = "导出任务库";
+            dlg.Filter = "JSON 文件 (*.json)|*.json";
+            dlg.FileName = "ww-tasker-" + DateTime.Now.ToString("yyyyMMdd") + ".json";
+            if (dlg.ShowDialog(this) != true) return;
+
+            string err;
+            if (QuestStore.ExportToFile(dlg.FileName, Db, out err))
+                ShowNotice("导出好了：" + System.IO.Path.GetFileName(dlg.FileName));
+            else
+                MsgWindow.Info(this, "导不出去", err ?? "写文件的时候出错了。");
+        }
+
+        private void SetUiScale(double s)
+        {
+            Store.Settings.UiScale = s;
+            SaveSoon();
+            ApplyUiScale();
+            _stripe.InvalidateVisual();
         }
 
         private int CountAllQuests()
@@ -644,7 +845,7 @@ namespace WuwaChecklist
             if (string.IsNullOrEmpty(name)) return;
             if (!Store.CreateProfile(name))
             {
-                MessageBox.Show(this, "这个名字已经有了。", "建不了", MessageBoxButton.OK, MessageBoxImage.Information);
+                MsgWindow.Info(this, "建不了", "这个名字已经有了。");
                 return;
             }
             Store.ActiveName = name;
@@ -658,7 +859,7 @@ namespace WuwaChecklist
             if (string.IsNullOrEmpty(name) || name == Store.ActiveName) return;
             if (!Store.RenameProfile(Store.ActiveName, name))
             {
-                MessageBox.Show(this, "这个名字已经有了。", "改不了", MessageBoxButton.OK, MessageBoxImage.Information);
+                MsgWindow.Info(this, "改不了", "这个名字已经有了。");
                 return;
             }
             _panel.InvalidateVisual();
@@ -668,11 +869,10 @@ namespace WuwaChecklist
         {
             if (Store.Profiles.Count <= 1)
             {
-                MessageBox.Show(this, "最后一个存档删不了。", "不行", MessageBoxButton.OK, MessageBoxImage.Information);
+                MsgWindow.Info(this, "不行", "最后一个存档删不了。");
                 return;
             }
-            if (MessageBox.Show(this, "删掉存档「" + Store.ActiveName + "」？\n里面的勾选和备注会一起没。", "确认删除",
-                    MessageBoxButton.OKCancel, MessageBoxImage.Warning) != MessageBoxResult.OK) return;
+            if (!MsgWindow.Ask(this, "确认删除", "删掉存档「" + Store.ActiveName + "」？\n里面的勾选和备注会一起没。", "删掉")) return;
 
             Store.DeleteProfile(Store.ActiveName);
             var e = Store.Profiles.Keys.GetEnumerator();
@@ -710,7 +910,7 @@ namespace WuwaChecklist
                     if (manual) SetBusy(false);
                     if (!ok)
                     {
-                        if (manual) MessageBox.Show(this, msg, "拉取失败", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        if (manual) MsgWindow.Info(this, "拉取失败", msg);
                         return;
                     }
                     Db = fetched;
@@ -718,8 +918,8 @@ namespace WuwaChecklist
                     _panel.InvalidateVisual();
                     _stripe.InvalidateVisual();
                     if (manual)
-                        MessageBox.Show(this, msg + (moved > 0 ? "\n有 " + moved + " 条旧进度跟着合并挪过来了。" : ""),
-                            "更新完成", MessageBoxButton.OK, MessageBoxImage.Information);
+                        MsgWindow.Info(this, "更新完成",
+                            msg + (moved > 0 ? "\n有 " + moved + " 条旧进度跟着合并挪过来了。" : ""));
                 }));
             });
         }
@@ -878,8 +1078,26 @@ namespace WuwaChecklist
 
         public List<Quest> CurrentShown()
         {
-            var r = CurrentRegion;
             var list = new List<Quest>();
+
+            // 搜索：跨全部版本找，按版本顺序排。这时候左列选中谁都不算数。
+            string q = (Store.Settings.SearchText ?? "").Trim();
+            if (!string.IsNullOrEmpty(q))
+            {
+                foreach (var reg in Db.Regions)
+                {
+                    foreach (var quest in reg.Quests)
+                    {
+                        if (quest.Name == null) continue;
+                        if (quest.Name.IndexOf(q, StringComparison.OrdinalIgnoreCase) < 0) continue;
+                        if (Store.Settings.FilterIncomplete && StateOf(quest) == QuestState.Done) continue;
+                        list.Add(quest);
+                    }
+                }
+                return list;
+            }
+
+            var r = CurrentRegion;
             if (r == null) return list;
 
             string tf = Store.Settings.TypeFilter;
@@ -887,16 +1105,16 @@ namespace WuwaChecklist
             if (byType)
             {
                 bool any = false;
-                foreach (var q in r.Quests) if (string.Equals(q.Type, tf, StringComparison.Ordinal)) { any = true; break; }
+                foreach (var quest in r.Quests) if (string.Equals(quest.Type, tf, StringComparison.Ordinal)) { any = true; break; }
                 // 这个区域里没有这一类的任务（比如切到只有潮汐的地区），就别把人筛空了
                 if (!any) byType = false;
             }
 
-            foreach (var q in r.Quests)
+            foreach (var quest in r.Quests)
             {
-                if (byType && !string.Equals(q.Type, tf, StringComparison.Ordinal)) continue;
-                if (Store.Settings.FilterIncomplete && StateOf(q) == QuestState.Done) continue;
-                list.Add(q);
+                if (byType && !string.Equals(quest.Type, tf, StringComparison.Ordinal)) continue;
+                if (Store.Settings.FilterIncomplete && StateOf(quest) == QuestState.Done) continue;
+                list.Add(quest);
             }
             return list;
         }

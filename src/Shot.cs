@@ -15,11 +15,15 @@ namespace WuwaChecklist
     /// </summary>
     internal static class Shot
     {
-        public static void Render(string path, double w, double h, bool folded, bool withBackdrop)
+        public static void Render(string path, double w, double h, bool folded, bool withBackdrop, double scale = 1.0)
         {
             var win = new MainWindow();
-            // 截图固定按 75% 走，别被本机存档里的透明度带跑
+            // 截图固定按 75% 透明度和命令行给的字号走，别被本机存档带跑——
+            // 图是给 README 看的，尺寸得跟参数严格对上
             win.Store.Settings.Opacity = 0.75;
+            win.Store.Settings.UiScale = scale;
+            // 缩放平时是 OnLoaded 里挂上去的，离屏渲染不会走到那儿，得自己来
+            win.ApplyUiScale();
 
             if (folded) win.SetFoldedVisual(folded: true, animate: false);
             else

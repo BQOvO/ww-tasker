@@ -111,6 +111,111 @@ namespace WuwaChecklist
         }
     }
 
+    /// <summary>
+    /// 跟主界面同色系的提示框。系统 MessageBox 一亮一白，晚上看着扎眼。
+    /// 只做两种：说一句（Info）和问一句（Ask）。
+    /// </summary>
+    internal sealed class MsgWindow : Window
+    {
+        private MsgWindow(string title, string body, string okText, string cancelText)
+        {
+            WindowStyle = WindowStyle.None;
+            AllowsTransparency = true;
+            Background = Brushes.Transparent;
+            ResizeMode = ResizeMode.NoResize;
+            WindowStartupLocation = WindowStartupLocation.CenterOwner;
+            ShowInTaskbar = false;
+            SizeToContent = SizeToContent.Height;
+            Width = 300;
+            Title = title;
+
+            var root = new Border
+            {
+                Background = new SolidColorBrush(Color.FromArgb(252, 20, 22, 25)),
+                BorderBrush = new SolidColorBrush(Color.FromArgb(210, 110, 116, 120)),
+                BorderThickness = new Thickness(1),
+                CornerRadius = new CornerRadius(6),
+                Padding = new Thickness(16, 14, 16, 14)
+            };
+
+            var sp = new StackPanel();
+
+            sp.Children.Add(new TextBlock
+            {
+                Text = title,
+                Foreground = Theme.BrTxt,
+                FontFamily = Theme.Family,
+                FontSize = 12.5,
+                FontWeight = FontWeights.SemiBold,
+                Margin = new Thickness(0, 0, 0, 6)
+            });
+            sp.Children.Add(new TextBlock
+            {
+                Text = body,
+                Foreground = Theme.BrSub,
+                FontFamily = Theme.Family,
+                FontSize = 11.5,
+                TextWrapping = TextWrapping.Wrap,
+                LineHeight = 18
+            });
+
+            var btns = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                HorizontalAlignment = HorizontalAlignment.Right,
+                Margin = new Thickness(0, 14, 0, 0)
+            };
+            if (cancelText != null)
+                btns.Children.Add(Btn(cancelText, false, () => { DialogResult = false; }));
+            btns.Children.Add(Btn(okText ?? "好", true, () => { DialogResult = true; }));
+            sp.Children.Add(btns);
+
+            root.Child = sp;
+            Content = root;
+
+            KeyDown += (s, e) =>
+            {
+                if (e.Key == Key.Escape) DialogResult = false;
+                else if (e.Key == Key.Enter) DialogResult = true;
+            };
+            MouseLeftButtonDown += (s, e) => { if (e.ButtonState == MouseButtonState.Pressed) DragMove(); };
+        }
+
+        /// <summary>说一句，点了就好。</summary>
+        public static void Info(Window owner, string title, string body)
+        {
+            var w = new MsgWindow(title, body, "好", null);
+            if (owner != null && owner.IsVisible) w.Owner = owner;
+            w.ShowDialog();
+        }
+
+        /// <summary>问一句，返回他点了确定还是取消。</summary>
+        public static bool Ask(Window owner, string title, string body, string okText = "确定", string cancelText = "取消")
+        {
+            var w = new MsgWindow(title, body, okText, cancelText);
+            if (owner != null && owner.IsVisible) w.Owner = owner;
+            return w.ShowDialog() == true;
+        }
+
+        private static Button Btn(string text, bool primary, Action act)
+        {
+            var b = new Button
+            {
+                Content = text,
+                FontFamily = Theme.Family,
+                FontSize = 11.5,
+                Foreground = primary ? Theme.BrCheckInk : Theme.BrRTxt,
+                Background = primary ? Theme.BrAcc : Theme.Freeze(Color.FromArgb(255, 44, 48, 52)),
+                BorderBrush = primary ? Theme.BrAcc : Theme.BrBorder,
+                BorderThickness = new Thickness(1),
+                Padding = new Thickness(14, 4, 14, 4),
+                Margin = new Thickness(8, 0, 0, 0)
+            };
+            b.Click += (s, e) => act();
+            return b;
+        }
+    }
+
     /// <summary>快捷键设置。点一下格子，按下组合键就记下来。</summary>
     internal sealed class HotkeyWindow : Window
     {
@@ -263,14 +368,14 @@ namespace WuwaChecklist
             string g = HotkeyManager.Format(e);
             if (g == null)
             {
-                MessageBox.Show(this, "这个键不太行，换个带 Ctrl 或 Alt 的。", "不行", MessageBoxButton.OK, MessageBoxImage.Information);
+                MsgWindow.Info(this, "不行", "这个键不太行，换个带 Ctrl 或 Alt 的。");
                 return;
             }
 
             foreach (var kv in _draft)
                 if (kv.Key != _capturing && kv.Value == g)
                 {
-                    MessageBox.Show(this, "这个组合已经给「" + kv.Key + "」用了。", "重复了", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MsgWindow.Info(this, "重复了", "这个组合已经给「" + kv.Key + "」用了。");
                     return;
                 }
 

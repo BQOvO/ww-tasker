@@ -34,14 +34,7 @@ namespace WuwaChecklist
             {
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-                string text;
-                using (var wc = new WebClient())
-                {
-                    wc.Encoding = Encoding.UTF8;
-                    wc.Headers.Add("User-Agent", "ww-tasker");
-                    wc.Headers.Add("Accept", "application/vnd.github+json");
-                    text = wc.DownloadString(ApiUrl);
-                }
+                string text = Net.Get(ApiUrl, 8000, "application/vnd.github+json");
 
                 object parsed;
                 string perr;
@@ -94,7 +87,7 @@ namespace WuwaChecklist
             }
             catch (Exception ex)
             {
-                error = ex.Message;
+                error = Net.Explain(ex);
                 return null;
             }
         }

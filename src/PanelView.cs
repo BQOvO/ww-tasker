@@ -27,6 +27,9 @@ namespace WuwaChecklist
         private double _questScroll;
         private Rect _hover = Rect.Empty;
 
+        /// <summary>这份滚动位置属于哪个（区域/类型/搜索词）组合。切走要存，切回来要还原。</summary>
+        private string _scrollKey;
+
         public PanelView(MainWindow host)
         {
             _host = host;
@@ -39,6 +42,40 @@ namespace WuwaChecklist
         public double RegionContentHeight { get; private set; }
         public double RegionViewportHeight { get; private set; }
         private double _regionScroll;
+
+        /// <summary>
+        /// 当前这一屏对应哪个键：区域 + 类型 + 搜索词。切区域、切签、改搜索词都会换键，
+        /// 换键之前把现在的滚动位置存进设置，新键没有记录就从头开始。
+        /// </summary>
+        private string CurrentScrollKey()
+        {
+            var st = _host.Store.Settings;
+            string q = (st.SearchText ?? "").Trim();
+            if (q.Length > 0) return "q:" + q.ToLowerInvariant();
+            var r = _host.CurrentRegion;
+            return "r:" + (r == null ? "" : r.Id) + "|" + st.TypeFilter;
+        }
+
+        /// <summary>把当前滚动位置写回设置（切走、关窗、滚动停下时调）。</summary>
+        public void SaveScroll()
+        {
+            var st = _host.Store.Settings;
+            string k = _scrollKey;
+            if (string.IsNullOrEmpty(k)) return;
+            if (_questScroll > 0.5) st.Scrolls[k] = _questScroll;
+            else st.Scrolls.Remove(k);
+            st.RegionScroll = _regionScroll > 0.5 ? _regionScroll : 0;
+        }
+
+        /// <summary>切到新的一屏：先存旧的，再按新键还原。</summary>
+        public void SwitchScroll()
+        {
+            SaveScroll();
+            string k = CurrentScrollKey();
+            _scrollKey = k;
+            double v;
+            _questScroll = _host.Store.Settings.Scrolls.TryGetValue(k, out v) ? v : 0;
+        }
 
         // ---------------- 布局常量 ----------------
         private const double TabsH = 30;
@@ -64,6 +101,13 @@ namespace WuwaChecklist
         {
             _dpi = VisualTreeHelper.GetDpi(this).PixelsPerDip;
             _hits.Clear();
+
+            // 头一次画：把上次关窗时的滚动位置接回来
+            if (_scrollKey == null)
+            {
+                SwitchScroll();
+                _regionScroll = _host.Store.Settings.RegionScroll;
+            }
 
             double w = ActualWidth;
             double h = ActualHeight;
@@ -115,6 +159,7 @@ namespace WuwaChecklist
 
         private void DrawHeader(DrawingContext dc, double w, double op)
         {
+            var st = _host.Store.Settings;
             var title = Text("鸣潮 · 查漏补缺", 13.5, Theme.BrTxt, true);
             dc.DrawText(title, new Point(14, (Theme.HeaderH - title.Height) / 2));
 
@@ -126,6 +171,10 @@ namespace WuwaChecklist
             double btnW = Math.Max(46, pt.Width + 22);
             double btnX = w - 14 - 24 - 6 - btnW;
             var btnRect = new Rect(btnX, btnY, btnW, btnH);
+
+            // 搜索药丸：夹在标题和存档按钮中间，宽度跟着窗口走
+            DrawSearchPill(dc, op, title.Width + 14 + 12, btnX - 8);
+
             dc.DrawGeometry(Theme.Scaled(Theme.TagBg, op), new Pen(Theme.Scaled(Theme.Border, op), 1), RRect(btnRect, 3, 3, 3, 3));
             pt.MaxTextWidth = btnW - 16;
             pt.Trimming = TextTrimming.CharacterEllipsis;
@@ -140,6 +189,56 @@ namespace WuwaChecklist
             DrawDots(dc, moreRect, Theme.BrRTxt);
             _hits.Add(new Hit { R = moreRect, Kind = "more" });
             if (moreRect.Contains(_hover)) dc.DrawGeometry(null, new Pen(Theme.BrAccDim, 1), RRect(moreRect, 3, 3, 3, 3));
+        }
+
+        /// <summary>
+        /// 头顶那枚搜索药丸。空着的时候只画个放大镜和「搜索」，有词就显示词和右边的 ×。
+        /// 位置是标题右边到存档按钮左边之间，窗口窄到放不下就不画（免得挤成一条缝）。
+        /// </summary>
+        private void DrawSearchPill(DrawingContext dc, double op, double x0, double x1)
+        {
+            double w = x1 - x0;
+            if (w < 52) return;
+
+            var st = _host.Store.Settings;
+            string q = st.SearchText ?? "";
+            bool on = q.Trim().Length > 0;
+
+            double btnH = 22;
+            double y = (Theme.HeaderH - btnH) / 2;
+            var rect = new Rect(x0, y, w, btnH);
+
+            dc.DrawGeometry(Theme.Scaled(Theme.TagBg, on ? Math.Min(1, op + 0.1) : op),
+                new Pen(on ? Theme.BrAccDim : Theme.Scaled(Theme.Border, op), 1),
+                RRect(rect, 11, 11, 11, 11));
+            if (rect.Contains(_hover)) dc.DrawGeometry(null, new Pen(Theme.BrAccDim, 1), RRect(rect, 11, 11, 11, 11));
+
+            // 放大镜：一个圈加一根柄，别指望字体里那个
+            var mc = new Point(x0 + 12, y + btnH / 2);
+            dc.DrawEllipse(null, new Pen(on ? Theme.BrAcc : Theme.BrDim, 1.2), mc, 4, 4);
+            dc.DrawLine(new Pen(on ? Theme.BrAcc : Theme.BrDim, 1.2),
+                new Point(mc.X + 3, mc.Y + 3), new Point(mc.X + 6, mc.Y + 6));
+
+            double clearW = on ? 16 : 0;
+            double tx = x0 + 21;
+            double tw = w - 21 - 8 - clearW;
+            var txt = on
+                ? Text(q, 10.5, Theme.BrTxt, false, tw)
+                : Text("搜索任务名", 10.5, Theme.BrSub, false, tw);
+            dc.DrawText(txt, new Point(tx, y + (btnH - txt.Height) / 2));
+
+            if (on)
+            {
+                var cr = new Rect(rect.Right - 18, y, 16, btnH);
+                var cc = new Point(cr.X + 8, cr.Y + btnH / 2);
+                var pen = new Pen(Theme.BrSub, 1.2);
+                dc.DrawLine(pen, new Point(cc.X - 3, cc.Y - 3), new Point(cc.X + 3, cc.Y + 3));
+                dc.DrawLine(pen, new Point(cc.X - 3, cc.Y + 3), new Point(cc.X + 3, cc.Y - 3));
+                _hits.Add(new Hit { R = cr, Kind = "searchclear" });
+            }
+
+            // 整块都能点（× 的那一小块后登记，会先命中它）
+            _hits.Add(new Hit { R = new Rect(rect.X, rect.Y, rect.Width - clearW, rect.Height), Kind = "search" });
         }
 
         private void DrawLeft(DrawingContext dc, double op, double bottom)
@@ -373,26 +472,42 @@ namespace WuwaChecklist
         {
             double left = Theme.LeftW + 1;
             double cw = w - left - 1;
-            var region = _host.CurrentRegion;
+            var st = _host.Store.Settings;
+            bool searching = !string.IsNullOrEmpty((st.SearchText ?? "").Trim());
 
-            if (region == null)
+            // 区域/类型/搜索词变了就是换了一屏，滚动位置各自记
+            if (CurrentScrollKey() != _scrollKey) SwitchScroll();
+
+            // 搜索时右列换成跨版本的搜索结果，没有「当前区域」这回事了
+            var region = searching ? null : _host.CurrentRegion;
+            var shown = BuildShown();
+
+            if (!searching && region == null)
             {
-                var e = Text("没有区域", 12, Theme.BrDim);
+                var e = Text("还没有任务库", 12, Theme.BrDim);
                 dc.DrawText(e, new Point(left + 14, _listTop + 14));
                 return;
             }
 
-            int done, total;
-            _host.CountRegion(region, out done, out total);
-
-            // 区域标题
-            var rt = Text(region.Name, 15, Theme.BrTxt, true);
-            dc.DrawText(rt, new Point(left + 14, Theme.HeaderH + 10));
-            var rc = Text(done + " / " + total, 11, Theme.BrAcc);
-            dc.DrawText(rc, new Point(left + 14 + rt.Width + 10, Theme.HeaderH + 14));
+            // 标题行：区域名 + 计数，或者「搜索结果 N 条」
+            if (searching)
+            {
+                var ht = Text("搜索结果", 15, Theme.BrTxt, true);
+                dc.DrawText(ht, new Point(left + 14, Theme.HeaderH + 10));
+                var hc = Text(shown.Count + " 条", 11, Theme.BrAcc);
+                dc.DrawText(hc, new Point(left + 14 + ht.Width + 10, Theme.HeaderH + 14));
+            }
+            else
+            {
+                int done, total;
+                _host.CountRegion(region, out done, out total);
+                var rt = Text(region.Name, 15, Theme.BrTxt, true);
+                dc.DrawText(rt, new Point(left + 14, Theme.HeaderH + 10));
+                var rc = Text(done + " / " + total, 11, Theme.BrAcc);
+                dc.DrawText(rc, new Point(left + 14 + rt.Width + 10, Theme.HeaderH + 14));
+            }
 
             // 只看未完成
-            var st = _host.Store.Settings;
             var cbRect = new Rect(w - 14 - 86, Theme.HeaderH + 12, 12, 12);
             dc.DrawGeometry(null, new Pen(st.FilterIncomplete ? Theme.BrAcc : Theme.Scaled(Theme.Border, op), 1), RRect(cbRect, 2, 2, 2, 2));
             if (st.FilterIncomplete)
@@ -407,9 +522,15 @@ namespace WuwaChecklist
                 new Point(left, Theme.HeaderH + Theme.TitleH - 4.5),
                 new Point(w - 1, Theme.HeaderH + Theme.TitleH - 4.5));
 
-            // 类型分页签
-            var shown = BuildShown();
-            DrawTabs(dc, op, left, cw, w, region, shown);
+            // 类型分页签：搜索时没有意义（结果是跨版本的），直接不给
+            if (searching)
+            {
+                _listTop = Theme.HeaderH + Theme.TitleH;
+            }
+            else
+            {
+                DrawTabs(dc, op, left, cw, w, region, shown);
+            }
 
             // 任务列表
             double listH = footerTop - _listTop;
@@ -432,7 +553,11 @@ namespace WuwaChecklist
 
             if (shown.Count == 0)
             {
-                var none = Text(st.FilterIncomplete ? "这个筛法下都做完了" : "这一栏还没有任务", 11.5, Theme.BrDim);
+                string empty;
+                if (searching) empty = "没搜到叫这个的任务";
+                else if (st.FilterIncomplete) empty = "这个筛法下都做完了";
+                else empty = "这一栏还没有任务";
+                var none = Text(empty, 11.5, Theme.BrDim);
                 dc.DrawText(none, new Point(left + 16, _listTop + 12));
             }
 
@@ -440,7 +565,7 @@ namespace WuwaChecklist
             {
                 double rh = RowBaseH + (HasNoteLine(q) ? RowNoteExtra : 0);
                 if (y + rh >= _listTop - 2 && y <= footerTop + 2)
-                    DrawQuestRow(dc, q, left, y, cw, rh, op);
+                    DrawQuestRow(dc, q, left, y, cw, rh, op, searching);
                 y += rh;
             }
             dc.Pop();
@@ -550,7 +675,7 @@ namespace WuwaChecklist
             dc.Pop();
         }
 
-        private void DrawQuestRow(DrawingContext dc, Quest q, double left, double top, double cw, double rh, double op)
+        private void DrawQuestRow(DrawingContext dc, Quest q, double left, double top, double cw, double rh, double op, bool withOrigin = false)
         {
             var st = _host.Store.Settings;
             int s = _host.StateOf(q);
@@ -600,6 +725,19 @@ namespace WuwaChecklist
             dc.DrawGeometry(Theme.TypeBack(q.Type, op), null, RRect(tagRect, 2.5, 2.5, 2.5, 2.5));
             dc.DrawText(tag, new Point(mx + 5, metaY + 1.5));
             mx = tagRect.Right + 7;
+
+            // 搜索结果里混着各个版本，得标一下这条是哪儿的
+            if (withOrigin)
+            {
+                var reg = _host.Db.FindRegion(q.RegionId);
+                string origin = reg == null ? "" : reg.Name;
+                if (!string.IsNullOrEmpty(origin))
+                {
+                    var ot = Text(origin, 10, Theme.BrDim, false, 40);
+                    dc.DrawText(ot, new Point(mx, metaY + 1));
+                    mx += ot.WidthIncludingTrailingWhitespace + 6;
+                }
+            }
 
             if (!string.IsNullOrEmpty(q.SubArea))
             {
@@ -754,14 +892,13 @@ namespace WuwaChecklist
                         InvalidateVisual();
                         break;
                     case "tab":
+                        // 别在这里把 _questScroll 清零——换屏前要先把它存回旧的那一屏
                         _host.Store.Settings.TypeFilter = (string)hit.Arg;
-                        _questScroll = 0;
                         _host.SaveSoon();
                         InvalidateVisual();
                         break;
                     case "region":
                         _host.SelectRegion((string)hit.Arg);
-                        _questScroll = 0;
                         InvalidateVisual();
                         break;
                     case "circle":
@@ -773,6 +910,14 @@ namespace WuwaChecklist
                         var q2 = (Quest)hit.Arg;
                         if (e.ClickCount >= 2) _host.BeginNoteEdit(q2, Rect.Empty);
                         else { _host.SelectedQuest = q2; InvalidateVisual(); }
+                        break;
+                    case "search":
+                        _host.BeginSearch();
+                        break;
+                    case "searchclear":
+                        _host.Store.Settings.SearchText = "";
+                        _host.SaveSoon();
+                        InvalidateVisual();
                         break;
                     case "filter":
                         _host.Store.Settings.FilterIncomplete = !_host.Store.Settings.FilterIncomplete;

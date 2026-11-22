@@ -202,16 +202,8 @@ namespace WuwaChecklist
             {
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-                string text;
-                using (var wc = new WebClient())
-                {
-                    wc.Encoding = Encoding.UTF8;
-                    wc.Headers.Add("User-Agent", "ww-tasker");
-                    wc.Headers.Add("Cache-Control", "no-cache");
-                    wc.Headers.Add("Pragma", "no-cache");
-                    // 带一个时间戳绕开 CDN 缓存，否则刚推上去的数据要等几分钟才拉得到
-                    text = wc.DownloadString(RemoteUrl + "?t=" + DateTime.Now.Ticks);
-                }
+                // 带一个时间戳绕开 CDN 缓存，否则刚推上去的数据要等几分钟才拉得到
+                string text = Net.Get(RemoteUrl + "?t=" + DateTime.Now.Ticks, 8000, null, true);
 
                 if (string.IsNullOrEmpty(text) || text.Trim().Length == 0)
                 {
@@ -262,7 +254,7 @@ namespace WuwaChecklist
                 fetched = db;
                 int n = 0;
                 foreach (var r in db.Regions) n += r.Quests.Count;
-                message = "已更新：" + db.Regions.Count + " 个区域 / " + n + " 条任务"
+                message = "已更新：" + db.Regions.Count + " 个" + QuestDatabase.GroupLabel(db) + " / " + n + " 条任务"
                           + (merging && (added > 0 || merged > 0)
                               ? "（新增 " + added + " 条，同名合并 " + merged + " 条）" : "")
                           + (string.IsNullOrEmpty(db.GameVersion) ? "" : "，游戏版本 " + db.GameVersion) + "。";
@@ -270,14 +262,15 @@ namespace WuwaChecklist
             }
             catch (Exception ex)
             {
-                message = "拉取失败：" + ex.Message;
+                message = "拉取失败：" + Net.Explain(ex);
                 return false;
             }
         }
 
-        /// <summary>把当前库导出回本地文件（设置里那个「导出」用）。</summary>
-        public static bool ExportToFile(string path, QuestDatabase db)
+        /// <summary>把当前库导出回本地文件（菜单「导出任务库」用）。</summary>
+        public static bool ExportToFile(string path, QuestDatabase db, out string error)
         {
+            error = null;
             try
             {
                 var root = db.ToJson();
@@ -285,8 +278,9 @@ namespace WuwaChecklist
                 File.WriteAllText(path, Json.Stringify(root, true), new UTF8Encoding(false));
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
+                error = ex.Message;
                 return false;
             }
         }

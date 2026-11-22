@@ -124,7 +124,7 @@ namespace WuwaChecklist
 
         // 尺寸
         public const double HeaderH = 40;
-        public const double TitleH = 38;      // 右列「区域名 + 只看未完成」那一条
+        public const double TitleH = 38;      // 右列「名字 + 只看未完成」那一条
         public const double FooterH = 26;
         public const double LeftW = 128;
         public const double RegionRowH = 46;
