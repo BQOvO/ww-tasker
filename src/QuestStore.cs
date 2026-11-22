@@ -113,7 +113,9 @@ namespace WuwaChecklist
                     wc.Encoding = Encoding.UTF8;
                     wc.Headers.Add("User-Agent", "ww-tasker");
                     wc.Headers.Add("Cache-Control", "no-cache");
-                    text = wc.DownloadString(RemoteUrl);
+                    wc.Headers.Add("Pragma", "no-cache");
+                    // 带一个时间戳绕开 CDN 缓存，否则刚推上去的数据要等几分钟才拉得到
+                    text = wc.DownloadString(RemoteUrl + "?t=" + DateTime.Now.Ticks);
                 }
 
                 if (string.IsNullOrEmpty(text) || text.Trim().Length == 0)
