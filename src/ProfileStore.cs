@@ -152,6 +152,11 @@ namespace WuwaChecklist
 
     internal sealed class AppSettings
     {
+        /// <summary>当前默认窗口尺寸的版本。改默认尺寸就 +1，老存档才会跟着换。</summary>
+        public const int CurrentLayoutVersion = 1;
+        public const int DefaultWinW = 392;
+        public const int DefaultWinH = 440;
+
         public double Opacity = 0.75;
         public bool Folded = false;
         public bool FilterIncomplete = false;
@@ -165,7 +170,9 @@ namespace WuwaChecklist
         public int WinX = int.MinValue;
         public int WinY = int.MinValue;
         public int WinW = 392;
-        public int WinH = 632;
+        public int WinH = 440;
+        /// <summary>默认尺寸的版本。老存档是 0，读到比当前小的值就把窗口尺寸刷成新默认。</summary>
+        public int LayoutVersion = 0;
         public int StripeX = int.MinValue;
         public int StripeY = int.MinValue;
 
@@ -186,6 +193,7 @@ namespace WuwaChecklist
             if (WinY != int.MinValue) d["winY"] = WinY;
             d["winW"] = WinW;
             d["winH"] = WinH;
+            d["layoutVersion"] = LayoutVersion;
             if (StripeX != int.MinValue) d["stripeX"] = StripeX;
             if (StripeY != int.MinValue) d["stripeY"] = StripeY;
             d["hkToggle"] = HkToggle;
@@ -206,15 +214,26 @@ namespace WuwaChecklist
             s.TypeFilter = Json.Str(d, "typeFilter", "");
             s.WinX = Json.Int(d, "winX", int.MinValue);
             s.WinY = Json.Int(d, "winY", int.MinValue);
-            s.WinW = Json.Int(d, "winW", 392);
-            s.WinH = Json.Int(d, "winH", 632);
+            s.WinW = Json.Int(d, "winW", DefaultWinW);
+            s.WinH = Json.Int(d, "winH", DefaultWinH);
+            s.LayoutVersion = Json.Int(d, "layoutVersion", 0);
             s.StripeX = Json.Int(d, "stripeX", int.MinValue);
             s.StripeY = Json.Int(d, "stripeY", int.MinValue);
             s.HkToggle = Json.Str(d, "hkToggle", "Ctrl+Alt+W");
             s.HkLock = Json.Str(d, "hkLock", "Ctrl+Alt+K");
             s.HkFold = Json.Str(d, "hkFold", "Ctrl+Alt+F");
-            if (s.WinW < 320) s.WinW = 392;
-            if (s.WinH < 300) s.WinH = 632;
+            // 默认尺寸换过一轮，老存档里那份旧尺寸就不作数了，
+            // 否则改了默认值也只能影响新装的用户
+            if (s.LayoutVersion < CurrentLayoutVersion)
+            {
+                s.LayoutVersion = CurrentLayoutVersion;
+                s.WinW = DefaultWinW;
+                s.WinH = DefaultWinH;
+                s.WinX = int.MinValue;
+                s.WinY = int.MinValue;
+            }
+            if (s.WinW < 320) s.WinW = DefaultWinW;
+            if (s.WinH < 300) s.WinH = DefaultWinH;
             return s;
         }
     }

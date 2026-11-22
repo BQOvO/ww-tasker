@@ -42,7 +42,7 @@ namespace WuwaChecklist
             Title = "鸣潮 · 查漏补缺";
             Icon = AppIcon.Load();
             Width = 392;
-            Height = 632;
+            Height = 440;
             SnapsToDevicePixels = true;
             UseLayoutRounding = true;
             WindowStartupLocation = WindowStartupLocation.Manual;
@@ -105,7 +105,7 @@ namespace WuwaChecklist
             }
             // 存档里的尺寸可能被折叠那会儿写坏了，太小的直接忽略
             if (st.WinW >= 340) Width = st.WinW;
-            if (st.WinH >= 420) Height = st.WinH;
+            if (st.WinH >= 360) Height = st.WinH;
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
@@ -395,10 +395,10 @@ namespace WuwaChecklist
                 // 存档里的尺寸可能被折叠那会儿写坏了（比如只有 320 高），
                 // 太小就回到默认，不至于展开成一条缝
                 int ww = Store.Settings.WinW >= 340 ? Store.Settings.WinW : 392;
-                int wh = Store.Settings.WinH >= 420 ? Store.Settings.WinH : 632;
+                int wh = Store.Settings.WinH >= 360 ? Store.Settings.WinH : 440;
                 Width = ww;
                 Height = wh;
-                MinWidth = 300; MinHeight = 420;
+                MinWidth = 300; MinHeight = 360;
             }
             _stripe.InvalidateVisual();
             _panel.InvalidateVisual();

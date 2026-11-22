@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -6,7 +6,7 @@ namespace WuwaChecklist
 {
     internal sealed class App : Application
     {
-        public const string Version = "0.5.0";
+        public const string Version = "0.6.0";
 
         private MainWindow _mw;
         private System.Threading.Mutex _mutex;
